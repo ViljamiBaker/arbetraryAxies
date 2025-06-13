@@ -1,10 +1,10 @@
 a small "Game" about having many different axies of travel
 
-##TO RUN:
+## TO RUN:
 run java on Renderer.java
 
-##Controllss
-#key1/key2...: what it does
+## Controllss
+# key1/key2...: what it does
 
 W/A/S/D: move camera
 R/F: zoom in and out camera
