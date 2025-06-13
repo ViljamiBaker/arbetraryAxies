@@ -1,6 +1,15 @@
-package axies;
+package axies.rendering;
 
 import javax.swing.JFrame;
+
+import axies.objects.Cube;
+import axies.objects.Model;
+import axies.objects.MoveableCube;
+import axies.objects.Point;
+import axies.objects.World;
+import axies.util.Util;
+import axies.util.Vector2D;
+import axies.util.VectorMD;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -141,8 +150,8 @@ public class Renderer extends JFrame{
                 player.addVelocityAxis(3, -0.2);
             }
 
-            if(kl.isKeyPressed(KeyEvent.VK_SPACE)&&player.isOnGround) {
-                player.addVelocityAxis(World.gravityAxis, 30);
+            if(kl.isKeyPressed(KeyEvent.VK_SPACE)&&player.isOnGround()) {
+                player.addVelocityAxis(World.gravityAxis, 60);
             }
 
             player.update(dt);
@@ -345,6 +354,37 @@ public class Renderer extends JFrame{
         g.setColor(c);
     }
 
+    private void drawModel(Model m, Graphics g){
+        Color c = g.getColor();
+        double distance = 0;
+        int disabledDimCount = 1;
+        /*
+        for (int i = 0; i < World.axisCount; i++) {
+            if(!World.enabledDims[i]){
+                if(!cube.isWithinAxis(i,player.getPositionAxis(i)+0.45)){
+                    disabledDimCount++;
+                    double dist2 = Math.min(
+                        Math.abs(player.getPositionAxis(i)+player.getSizeAxis(i)-cube.getPositionAxis(i)),
+                            Math.abs(player.getPositionAxis(i)-cube.getPositionAxis(i)-cube.getSizeAxis(i)));
+                    dist2 = dist2*dist2;
+                    distance+=dist2;
+                }
+            }
+        }
+        distance = Math.sqrt(distance);
+        double opacity = Math.max(1.0-distance, 0)/disabledDimCount;
+
+        g.setColor(new Color(c.getRed(),c.getBlue(),c.getGreen(),(int)(opacity*255.0)));*/
+        for (int i = 0; i < m.getVertexes().length; i++) {
+            drawCircle(cf(m.getVertexes()[i]), g);
+        }
+
+        for (int i = 0; i < m.getEdges().length; i++) {
+            drawLine(cf(m.getVertexes()[m.getEdges()[i][0]]), cf(m.getVertexes()[m.getEdges()[i][1]]), g);
+        }
+        g.setColor(c);
+    }
+
     public void paint(){
         if(g == null)return;
 
@@ -364,6 +404,11 @@ public class Renderer extends JFrame{
         for (Cube cube: World.cubes) {
             drawCube(cube, bg);
         }
+
+        for (Model model: World.models) {
+            drawModel(model, bg);
+        }
+
         bg.setColor(new Color(173, 101, 0));
 
         for (MoveableCube cube: World.moveableCubes) {

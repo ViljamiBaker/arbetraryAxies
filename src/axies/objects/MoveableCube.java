@@ -1,4 +1,4 @@
-package axies;
+package axies.objects;
 
 public class MoveableCube extends Cube{
 
@@ -94,6 +94,12 @@ public class MoveableCube extends Cube{
 
         mc.setPositionAxis(lowestDistIndex, lowestNewPos);
     }
+    
+    public static void resolveCollision(MoveableCube mc, Model m){
+        for (Cube c : m.getCubes()) {
+            MoveableCube.resolveCollision(mc, c);
+        }
+    }
 
     private Point velocity = new Point();
 
@@ -164,5 +170,9 @@ public class MoveableCube extends Cube{
 
     public double getVelocityAxis(int axis) {
         return velocity.getAxis(axis);
+    }
+
+    public boolean isOnGround() {
+        return isOnGround;
     }
 }

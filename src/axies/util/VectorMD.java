@@ -1,4 +1,4 @@
-package axies;
+package axies.util;
 
 public class VectorMD {
    public double M;

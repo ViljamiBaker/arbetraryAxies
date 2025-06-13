@@ -1,4 +1,4 @@
-package axies;
+package axies.objects;
 
 import java.util.Arrays;
 
@@ -100,5 +100,15 @@ public class Point {
     @Override
     public String toString(){
         return Arrays.toString(position);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof Point)) return false;
+        Point p = (Point)o;
+        for (int i = 0; i < World.axisCount; i++) {
+            if(p.getAxis(i)-this.getAxis(i)>0.000001) return false;
+        }
+        return true;
     }
 }

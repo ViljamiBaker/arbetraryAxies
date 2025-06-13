@@ -1,4 +1,4 @@
-package axies;
+package axies.util;
 
 public class Util {
     public static int triangleNum(int i){

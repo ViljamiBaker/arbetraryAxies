@@ -1,4 +1,4 @@
-package axies;
+package axies.objects;
 
 public class Cube {
     public static int[][] vertexes;
