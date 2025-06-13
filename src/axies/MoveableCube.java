@@ -102,7 +102,7 @@ public class MoveableCube extends Cube{
     private double groundDrag;
 
     public MoveableCube(Point position, Point size, double drag, double groundDrag){
-        super(position, size);
+        super(position, size, true);
         this.drag = drag;
         this.groundDrag = groundDrag;
     }
@@ -121,7 +121,7 @@ public class MoveableCube extends Cube{
         }else{
             velocity.mul(drag);
         }
-        
+
         isOnGround = false;
 
         for (int i = 0; i < World.axisCount; i++) {

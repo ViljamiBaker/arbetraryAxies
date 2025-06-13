@@ -39,6 +39,10 @@ public class Renderer extends JFrame{
         this.addMouseListener(ml);
         setBGValues();
         Cube.calcCube();
+        World.enabledDims[0] = true;
+        World.enabledDims[1] = true;
+        World.enabledDims[2] = true;
+        camera.zoom = 0.033;
     }
 
     public class mouseListener implements MouseListener{
@@ -331,6 +335,7 @@ public class Renderer extends JFrame{
             for (int j = 0; j < Cube.vertexes[0].length; j++) {
                 points[i].setAxis(j,cube.getPositionAxis(j)+cube.getSizeAxis(j)*Cube.vertexes[i][j]);
             }
+            if(cube.drawPoints())
             drawCircle(cf(points[i]), g);
         }
 
@@ -359,6 +364,7 @@ public class Renderer extends JFrame{
         for (Cube cube: World.cubes) {
             drawCube(cube, bg);
         }
+        bg.setColor(new Color(173, 101, 0));
 
         for (MoveableCube cube: World.moveableCubes) {
             drawCube(cube, bg);

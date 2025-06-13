@@ -33,10 +33,12 @@ public class Cube {
 
     private Point position;
     private Point size;
+    private boolean drawPoints;
 
-    public Cube(Point position, Point size){
+    public Cube(Point position, Point size, boolean drawPoints){
         this.position = position;
         this.size = size;
+        this.drawPoints = drawPoints;
     }
 
     public double getPositionAxis(int axis){
@@ -102,6 +104,10 @@ public class Cube {
 
     public double getMidpointAxis(int axis){
         return getPositionAxis(axis)+getSizeAxis(axis)/2.0;
+    }
+
+    public boolean drawPoints(){
+        return drawPoints;
     }
 
     public boolean isCollidingWith(Cube other){

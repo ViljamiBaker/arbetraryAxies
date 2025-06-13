@@ -5,15 +5,22 @@ public class World {
     static Point[] points = {};//{new Point(1,1,1),new Point(2,2,2),new Point(1,2,1),new Point(2,2,2)};
 
     static Cube[] cubes = {
-        new Cube(new Point(0,0,0), new Point(10,1,10,10,10)),
+        new Cube(new Point(0,0,0), new Point(10,1,10,10,10),false),
 
-        new Cube(new Point(4,1,4), new Point(1,4,1,2,2)),
-        new Cube(new Point(2,5,2), new Point(5,1,5,2,2)),
-        new Cube(new Point(3,6,3), new Point(3,1,3,2,2)),
+        new Cube(new Point(3.9,2,3.9), new Point(0.1,3,1.2,2,2),false),
+        new Cube(new Point(3.9,1,3.9), new Point(0.1,1,1.2,0.5,2),true),
+        new Cube(new Point(3.9,1,3.9), new Point(1.2,4,0.1,2,2),false),
+        new Cube(new Point(5.0,1,3.9), new Point(0.1,4,1.2,2,2),false),
+        new Cube(new Point(3.9,1,5.0), new Point(1.2,4,0.1,2,2),false),
+        //new Cube(new Point(3.9,1,3.9), new Point(1.1,4,0.1,2,2)),
+        //new Cube(new Point(3.9,1,3.9), new Point(1.1,4,0.1,2,2)),
 
-        new Cube(new Point(0,1,7), new Point(5,1,3,2,2)),
-        new Cube(new Point(0,2,7), new Point(10,1,3,2,2)),
-        new Cube(new Point(6,1,7), new Point(4,1,3,2,2)),
+        new Cube(new Point(2,5,2), new Point(5,1,5,2,2),false),
+        new Cube(new Point(3,6,3), new Point(3,1,3,2,2),false),
+
+        new Cube(new Point(0,1,7), new Point(5,1,3,2,2),false),
+        new Cube(new Point(0,2,7), new Point(10,1,3,2,2),false),
+        new Cube(new Point(6,1,7), new Point(4,1,3,2,2),false),
     };
 
     static MoveableCube[] moveableCubes = {
