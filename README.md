@@ -1,18 +1,29 @@
-## Getting Started
+a small "Game" about having many different axies of travel
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+##TO RUN:
+run java on Renderer.java
 
-## Folder Structure
+##Controllss
+#key1/key2...: what it does
 
-The workspace contains two folders by default, where:
+W/A/S/D: move camera
+R/F: zoom in and out camera
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Left click: select axis (colored circle)
+Middle click: deselect axis
+Right click: move axis to mouse
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+N: Change if axies are normalised (on by default)
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+T/G: rotate about the y axis (not great)
 
-## Dependency Management
+I/K: move on x axis
+L/J: move on z axis
+O/U: move on w axis
+Space: jump on ground
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+P: pick up or drop nearest cube
+
+1-9: change axis n to be visable
+
+I think thats all of them
