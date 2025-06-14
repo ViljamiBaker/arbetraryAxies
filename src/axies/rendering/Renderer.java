@@ -27,7 +27,9 @@ public class Renderer extends JFrame{
 
     boolean normalising = true;
 
-    MoveableCube player = new MoveableCube(new Point(0,70,0), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93);
+    boolean camLock = false;
+
+    MoveableCube player = new MoveableCube(new Point(1,70,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93);
 
     MoveableCube cubeHolding = null;
 
@@ -47,7 +49,6 @@ public class Renderer extends JFrame{
         World.ZERO = new Point();
         this.addMouseListener(ml);
         setBGValues();
-        Cube.calcCube();
         World.enabledDims[0] = true;
         World.enabledDims[1] = true;
         World.enabledDims[2] = true;
@@ -151,10 +152,14 @@ public class Renderer extends JFrame{
             }
 
             if(kl.isKeyPressed(KeyEvent.VK_SPACE)&&player.isOnGround()) {
-                player.addVelocityAxis(World.gravityAxis, 60);
+                player.addVelocityAxis(World.gravityAxis, 30);
             }
 
+            //System.out.println(player.getVelocityAxis(2));
+
             player.update(dt);
+
+            if(camLock) camera.pos = (World.convertPointVector2D(player.getMidpoint()));
 
             if(kl.isKeyPressed(KeyEvent.VK_P)) {
                 if(cubeHolding != null){
@@ -185,6 +190,9 @@ public class Renderer extends JFrame{
             for (Cube c : World.cubes) {
                 MoveableCube.resolveCollision(player, c);
             }
+            for (Model m : World.models) {
+                MoveableCube.resolveCollision(player, m);
+            }
 
             // axies transformations
 
@@ -196,6 +204,8 @@ public class Renderer extends JFrame{
             }
 
             if(kl.isKeyPressed(KeyEvent.VK_N))normalising = !normalising;
+
+            if(kl.isKeyPressed(KeyEvent.VK_C))camLock = !camLock;
             
             if(kl.isKeyPressed(KeyEvent.VK_Y)){
                 movingAxis++;
@@ -319,6 +329,7 @@ public class Renderer extends JFrame{
     }
 
     private void drawCube(Cube cube, Graphics g){
+        if(!cube.drawLines()&&!cube.drawPoints())return;
         Color c = g.getColor();
         double distance = 0;
         int disabledDimCount = 1;
@@ -348,6 +359,7 @@ public class Renderer extends JFrame{
             drawCircle(cf(points[i]), g);
         }
 
+        if(cube.drawLines())
         for (int i = 0; i < Cube.edges.length; i++) {
             drawLine(cf(points[Cube.edges[i][0]]), cf(points[Cube.edges[i][1]]), g);
         }
@@ -355,34 +367,41 @@ public class Renderer extends JFrame{
     }
 
     private void drawModel(Model m, Graphics g){
-        Color c = g.getColor();
-        double distance = 0;
-        int disabledDimCount = 1;
-        /*
-        for (int i = 0; i < World.axisCount; i++) {
-            if(!World.enabledDims[i]){
-                if(!cube.isWithinAxis(i,player.getPositionAxis(i)+0.45)){
-                    disabledDimCount++;
-                    double dist2 = Math.min(
-                        Math.abs(player.getPositionAxis(i)+player.getSizeAxis(i)-cube.getPositionAxis(i)),
-                            Math.abs(player.getPositionAxis(i)-cube.getPositionAxis(i)-cube.getSizeAxis(i)));
-                    dist2 = dist2*dist2;
-                    distance+=dist2;
-                }
-            }
+        for (Cube c : m.getVisableCubes()) {
+            drawCube(c, g);
         }
-        distance = Math.sqrt(distance);
-        double opacity = Math.max(1.0-distance, 0)/disabledDimCount;
-
-        g.setColor(new Color(c.getRed(),c.getBlue(),c.getGreen(),(int)(opacity*255.0)));*/
+        /*
+        Color c = g.getColor();
+        if(m.drawPoints())
         for (int i = 0; i < m.getVertexes().length; i++) {
             drawCircle(cf(m.getVertexes()[i]), g);
         }
 
         for (int i = 0; i < m.getEdges().length; i++) {
+            double distance = 0;
+            int disabledDimCount = 1;
+            
+            for (int j = 0; j < World.axisCount; j++) {
+                Point p1 = m.getVertexes()[m.getEdges()[i][0]];
+                Point p2 = m.getVertexes()[m.getEdges()[i][1]];
+                if(!World.enabledDims[j]){
+                    if(!Util.within(Math.min(p1.getAxis(j),p2.getAxis(j))-0.5,Math.max(p1.getAxis(j),p2.getAxis(j))+0.5,player.getMidpointAxis(j))){
+                        disabledDimCount++;
+                        double dist2 = Math.min(
+                            Math.abs(player.getPositionAxis(j)+player.getSizeAxis(j)-p1.getAxis(j)),
+                                Math.abs(player.getPositionAxis(j)-p2.getAxis(j)));
+                        dist2 = dist2*dist2;
+                        distance+=dist2;
+                    }
+                }
+            }
+            distance = Math.sqrt(distance);
+            double opacity = Math.max(1.0-distance, 0)/disabledDimCount;
+    
+            g.setColor(new Color(c.getRed(),c.getBlue(),c.getGreen(),(int)(opacity*255.0)));
             drawLine(cf(m.getVertexes()[m.getEdges()[i][0]]), cf(m.getVertexes()[m.getEdges()[i][1]]), g);
         }
-        g.setColor(c);
+        g.setColor(c);*/
     }
 
     public void paint(){

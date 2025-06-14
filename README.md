@@ -22,6 +22,8 @@ L/J: move on z axis
 O/U: move on w axis
 Space: jump on ground
 
+C: lock camera to player
+
 P: pick up or drop nearest cube
 
 1-9: change axis n to be visable

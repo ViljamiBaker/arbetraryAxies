@@ -1,20 +1,28 @@
 package axies.objects;
 
+// might be useless ngl
 public class Model {
     Cube[] cubes;
 
-    Point[] vertexes;
+    Cube[] visableCubes;
 
-    int[][] edges;
+    //Point[] vertexes;
 
-    public Model(Cube[] cubes, Point[] vertexes, int[][] edges){
+    //int[][] edges;
+
+    boolean drawPoints;
+
+    //public Model(Cube[] cubes, Point[] vertexes, int[][] edges, boolean drawPoints){
+    //    this.cubes = cubes;
+    //    this.vertexes = vertexes;
+    //    this.edges = edges;
+    //    this.drawPoints = drawPoints;
+    //}
+
+    public Model(Cube[] cubes, Cube[] visableCubes, boolean drawPoints){
         this.cubes = cubes;
-        this.vertexes = vertexes;
-        this.edges = edges;
-    }
-
-    public Model(Cube[] cubes, Cube[] visableCubes){
-        this.cubes = cubes;
+        this.visableCubes = visableCubes;
+        /*
         vertexes = new Point[Cube.vertexes.length*visableCubes.length];
         int vertexPointer = 0;
         edges = new int[Cube.edges.length*visableCubes.length][2];
@@ -36,18 +44,28 @@ public class Model {
             }
 
             cubePointer = vertexPointer;
-        }
+        }*/
+
+        this.drawPoints = drawPoints;
     }
 
     public Cube[] getCubes(){
         return cubes;
     }
 
-    public int[][] getEdges() {
+    public Cube[] getVisableCubes(){
+        return visableCubes;
+    }
+
+    /*public int[][] getEdges() {
         return edges;
     }
 
     public Point[] getVertexes() {
         return vertexes;
+    }*/
+
+    public boolean drawPoints(){
+        return drawPoints;
     }
 }

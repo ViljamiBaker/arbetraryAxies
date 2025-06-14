@@ -50,7 +50,6 @@ public class MoveableCube extends Cube{
         c2.addPoisitionAxis(lowestDistIndex, lowestDist);
         
         if(lowestDistIndex==World.gravityAxis){
-            c1.isOnGround = true;
             c2.isOnGround = true;
         }
 
@@ -61,7 +60,7 @@ public class MoveableCube extends Cube{
     }
 
     public static void resolveCollision(MoveableCube mc, Cube nmc){
-        if(!mc.isCollidingWith(nmc)) return;
+        if(!mc.isCollidingWith(nmc)||!nmc.collidable()) return;
         double lowestNewPos = -1;
         int lowestDistIndex = -1;
         double lowestDist = Double.MAX_VALUE;
@@ -73,7 +72,7 @@ public class MoveableCube extends Cube{
                 if(distance<lowestDist){
                     lowestDistIndex = i;
                     lowestDist = distance;
-                    lowestNewPos = newPos - 0.00001;
+                    lowestNewPos = newPos - 0.0000001;
                 }
             }else{
                 double newPos = nmc.getPositionAxis(i)+nmc.getSizeAxis(i);
@@ -81,7 +80,7 @@ public class MoveableCube extends Cube{
                 if(distance<lowestDist){
                     lowestDistIndex = i;
                     lowestDist = distance;
-                    lowestNewPos = newPos + 0.00001;
+                    lowestNewPos = newPos + 0.0000001;
                 }
             }
         }
@@ -93,6 +92,7 @@ public class MoveableCube extends Cube{
         }
 
         mc.setPositionAxis(lowestDistIndex, lowestNewPos);
+        mc.setVelocityAxis(lowestDistIndex, 0);
     }
     
     public static void resolveCollision(MoveableCube mc, Model m){
@@ -108,7 +108,7 @@ public class MoveableCube extends Cube{
     private double groundDrag;
 
     public MoveableCube(Point position, Point size, double drag, double groundDrag){
-        super(position, size, true);
+        super(position, size, true,true,true);
         this.drag = drag;
         this.groundDrag = groundDrag;
     }
@@ -120,24 +120,25 @@ public class MoveableCube extends Cube{
     boolean isOnGround;
 
     public void update(double dt){
-        velocity.add(World.gravityAxis, -World.gravityPower);
 
         if(isOnGround){
             velocity.mul(groundDrag);
         }else{
+            velocity.add(World.gravityAxis, World.gravityPower);
             velocity.mul(drag);
         }
 
-        isOnGround = false;
+        this.addPoisitionAxis(World.gravityAxis, 0.1*Math.signum(World.gravityPower));
+        isOnGround = World.isWithinCubes(this);
+        this.addPoisitionAxis(World.gravityAxis, -0.2*Math.signum(World.gravityPower));
+        if(isOnGround&&World.isWithinCubes(this))isOnGround = false;
+        this.addPoisitionAxis(World.gravityAxis, 0.1*Math.signum(World.gravityPower));
 
         for (int i = 0; i < World.axisCount; i++) {
             this.addPoisitionAxis(i,velocity.getAxis(i)*dt);
             if(World.isWithinCubes(this)){
-                this.addPoisitionAxis(i,-velocity.getAxis(i)*dt-0.00001*Math.signum(velocity.getAxis(i)));
+                this.addPoisitionAxis(i,-velocity.getAxis(i)*dt-0.000001*Math.signum(velocity.getAxis(i)));
                 velocity.setAxis(i, 0);
-                if(i==World.gravityAxis){
-                    isOnGround = true;
-                }
             }
         }
     }

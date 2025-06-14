@@ -34,11 +34,15 @@ public class Cube {
     private Point position;
     private Point size;
     private boolean drawPoints;
+    private boolean drawLines;
+    private boolean collidable;
 
-    public Cube(Point position, Point size, boolean drawPoints){
+    public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable){
         this.position = position;
         this.size = size;
         this.drawPoints = drawPoints;
+        this.drawLines = drawLines;
+        this.collidable = collidable;
     }
 
     public double getPositionAxis(int axis){
@@ -89,6 +93,11 @@ public class Cube {
         return position.getAxis(axis)<=point&&position.getAxis(axis)+size.getAxis(axis)>=point;
     }
 
+    public boolean isWithinAxis(int axis, double p1, double p2){
+        return (Math.min(p1, p2)<=position.getAxis(axis)+size.getAxis(axis)&&
+                position.getAxis(axis)<=Math.max(p1, p2));
+    }
+
     public boolean isWithinAxis(int axis, Cube other){
         return other.position.getAxis(axis)<=position.getAxis(axis)+size.getAxis(axis)&&
         position.getAxis(axis)<=other.position.getAxis(axis)+other.size.getAxis(axis);
@@ -108,6 +117,14 @@ public class Cube {
 
     public boolean drawPoints(){
         return drawPoints;
+    }
+
+    public boolean drawLines(){
+        return drawLines;
+    }
+
+    public boolean collidable(){
+        return collidable;
     }
 
     public boolean isCollidingWith(Cube other){
