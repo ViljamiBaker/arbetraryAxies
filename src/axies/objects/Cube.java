@@ -1,5 +1,7 @@
 package axies.objects;
 
+import java.awt.Color;
+
 public class Cube {
     public static int[][] vertexes;
     public static int[][] edges;
@@ -37,12 +39,24 @@ public class Cube {
     private boolean drawLines;
     private boolean collidable;
 
+    private Color c;
+
+    public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c){
+        this.position = position;
+        this.size = size;
+        this.drawPoints = drawPoints;
+        this.drawLines = drawLines;
+        this.collidable = collidable;
+        this.c = c;
+    }
+
     public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable){
         this.position = position;
         this.size = size;
         this.drawPoints = drawPoints;
         this.drawLines = drawLines;
         this.collidable = collidable;
+        this.c = Color.BLACK;
     }
 
     public double getPositionAxis(int axis){
@@ -127,7 +141,9 @@ public class Cube {
         return collidable;
     }
 
-    public boolean isCollidingWith(Cube other){
+    public boolean isCollidingWith(Cube other, boolean collide){
+        if(!(this.collidable()&&other.collidable())&&collide) return false;
+
         for (int i = 0; i < World.axisCount; i++) {
             if(!(other.position.getAxis(i)<=position.getAxis(i)+size.getAxis(i)&&
                 position.getAxis(i)<=other.position.getAxis(i)+other.size.getAxis(i))){
@@ -135,5 +151,9 @@ public class Cube {
             }
         }
         return true;
+    }
+
+    public Color getColor() {
+        return c;
     }
 }

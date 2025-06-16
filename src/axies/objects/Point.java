@@ -77,6 +77,14 @@ public class Point {
         return this;
     }
 
+    public double dist(Point other){
+        double dist = 0;
+        for (int i = 0; i < World.axisCount; i++) {
+            dist += (other.getAxis(i)-this.getAxis(i))*(other.getAxis(i)-this.getAxis(i));
+        }
+        return Math.sqrt(dist);
+    }
+
     public void rotateAbout(int axis, double theta){
         //TODO: generalize?
         switch (axis) {

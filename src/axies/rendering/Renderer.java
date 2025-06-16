@@ -6,6 +6,7 @@ import axies.objects.Cube;
 import axies.objects.Model;
 import axies.objects.MoveableCube;
 import axies.objects.Point;
+import axies.objects.TextCube;
 import axies.objects.World;
 import axies.util.Util;
 import axies.util.Vector2D;
@@ -167,10 +168,10 @@ public class Renderer extends JFrame{
                 }else{
                     int lowestDistIndex = -1;
                     double lowestDist = Double.MAX_VALUE;
-                    for (int i = 0; i < World.moveableCubes.length; i++) {
+                    for (int i = 0; i < World.level.moveableCubes.length; i++) {
                         double dist = 0;
                         for (int j = 0; j < World.axisCount; j++) {
-                            dist += Math.abs(player.getMidpointAxis(j)-World.moveableCubes[i].getMidpointAxis(j));
+                            dist += Math.abs(player.getMidpointAxis(j)-World.level.moveableCubes[i].getMidpointAxis(j));
                         }
                         if(dist<lowestDist){
                             lowestDistIndex = i;
@@ -178,7 +179,7 @@ public class Renderer extends JFrame{
                         }
                     }
                     if(lowestDist<=1.5)
-                        cubeHolding = World.moveableCubes[lowestDistIndex];
+                        cubeHolding = World.level.moveableCubes[lowestDistIndex];
                 }
             }
 
@@ -187,10 +188,10 @@ public class Renderer extends JFrame{
                 cubeHolding.setVelocity(new Point());
             }
 
-            for (Cube c : World.cubes) {
+            for (Cube c : World.level.cubes) {
                 MoveableCube.resolveCollision(player, c);
             }
-            for (Model m : World.models) {
+            for (Model m : World.level.models) {
                 MoveableCube.resolveCollision(player, m);
             }
 
@@ -250,7 +251,7 @@ public class Renderer extends JFrame{
 
             kl.update();
 
-            World.updateMovableCubes(player, dt);
+            World.level.update(player, dt);
 
             double t2 = System.nanoTime();
             dt = Math.min((t2-t1)/1000000000.0,0.05);
@@ -330,7 +331,7 @@ public class Renderer extends JFrame{
 
     private void drawCube(Cube cube, Graphics g){
         if(!cube.drawLines()&&!cube.drawPoints())return;
-        Color c = g.getColor();
+        Color c = cube.getColor();
         double distance = 0;
         int disabledDimCount = 1;
         for (int i = 0; i < World.axisCount; i++) {
@@ -362,6 +363,15 @@ public class Renderer extends JFrame{
         if(cube.drawLines())
         for (int i = 0; i < Cube.edges.length; i++) {
             drawLine(cf(points[Cube.edges[i][0]]), cf(points[Cube.edges[i][1]]), g);
+        }
+
+        if(cube instanceof TextCube){
+            if(player.getMidpoint().dist(cube.getMidpoint())<=((TextCube)cube).radius()||player.isCollidingWith(cube, false)){
+                g.setColor(Color.BLACK);        
+                Vector2D converted = cf(cube.getMidpoint());
+                String text = ((TextCube)cube).text();
+                g.drawString(text, (int)converted.x - g.getFontMetrics().stringWidth(text)/2, (int)converted.y - g.getFontMetrics().getHeight()/2);
+            }
         }
         g.setColor(c);
     }
@@ -420,17 +430,15 @@ public class Renderer extends JFrame{
             drawCircle(cf(point), bg);
         }
 
-        for (Cube cube: World.cubes) {
+        for (Cube cube: World.level.cubes) {
             drawCube(cube, bg);
         }
 
-        for (Model model: World.models) {
+        for (Model model: World.level.models) {
             drawModel(model, bg);
         }
 
-        bg.setColor(new Color(173, 101, 0));
-
-        for (MoveableCube cube: World.moveableCubes) {
+        for (MoveableCube cube: World.level.moveableCubes) {
             drawCube(cube, bg);
             //drawLine(cf(cube.getPosition()), cf(new Point(cube.getVelocity()).add(cube.getVelocity())), bg);
         }

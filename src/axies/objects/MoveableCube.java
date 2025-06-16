@@ -1,9 +1,11 @@
 package axies.objects;
 
+import java.awt.Color;
+
 public class MoveableCube extends Cube{
 
     public static void resolveCollision(MoveableCube cube1, MoveableCube cube2){
-        if(!cube1.isCollidingWith(cube2)) return;
+        if(!cube1.isCollidingWith(cube2, true)) return;
         double lowestDist = Double.MAX_VALUE;
         int lowestDistIndex = -1;
         boolean lowestFlipped = false;
@@ -60,7 +62,7 @@ public class MoveableCube extends Cube{
     }
 
     public static void resolveCollision(MoveableCube mc, Cube nmc){
-        if(!mc.isCollidingWith(nmc)||!nmc.collidable()) return;
+        if(!mc.isCollidingWith(nmc,true)) return;
         double lowestNewPos = -1;
         int lowestDistIndex = -1;
         double lowestDist = Double.MAX_VALUE;
@@ -108,7 +110,7 @@ public class MoveableCube extends Cube{
     private double groundDrag;
 
     public MoveableCube(Point position, Point size, double drag, double groundDrag){
-        super(position, size, true,true,true);
+        super(position, size, true,true,true, new Color(173, 101, 0));
         this.drag = drag;
         this.groundDrag = groundDrag;
     }
@@ -129,14 +131,12 @@ public class MoveableCube extends Cube{
         }
 
         this.addPoisitionAxis(World.gravityAxis, 0.1*Math.signum(World.gravityPower));
-        isOnGround = World.isWithinCubes(this);
-        this.addPoisitionAxis(World.gravityAxis, -0.2*Math.signum(World.gravityPower));
-        if(isOnGround&&World.isWithinCubes(this))isOnGround = false;
-        this.addPoisitionAxis(World.gravityAxis, 0.1*Math.signum(World.gravityPower));
+        isOnGround = World.level.isWithinCubes(this);
+        this.addPoisitionAxis(World.gravityAxis, -0.1*Math.signum(World.gravityPower));
 
         for (int i = 0; i < World.axisCount; i++) {
             this.addPoisitionAxis(i,velocity.getAxis(i)*dt);
-            if(World.isWithinCubes(this)){
+            if(World.level.isWithinCubes(this)){
                 this.addPoisitionAxis(i,-velocity.getAxis(i)*dt-0.000001*Math.signum(velocity.getAxis(i)));
                 velocity.setAxis(i, 0);
             }
@@ -175,5 +175,12 @@ public class MoveableCube extends Cube{
 
     public boolean isOnGround() {
         return isOnGround;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof MoveableCube)) return false;
+        MoveableCube m = (MoveableCube)o;
+        return this.getPosition().equals(m.getPosition())&&this.getSize().equals(m.getSize());
     }
 }
