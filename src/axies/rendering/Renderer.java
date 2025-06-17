@@ -2,12 +2,12 @@ package axies.rendering;
 
 import javax.swing.JFrame;
 
-import axies.objects.Cube;
 import axies.objects.Model;
-import axies.objects.MoveableCube;
 import axies.objects.Point;
-import axies.objects.TextCube;
 import axies.objects.World;
+import axies.objects.cubes.Cube;
+import axies.objects.cubes.MoveableCube;
+import axies.objects.cubes.TextCube;
 import axies.util.Util;
 import axies.util.Vector2D;
 import axies.util.VectorMD;
@@ -27,10 +27,12 @@ public class Renderer extends JFrame{
     private Vector2D center = new Vector2D(500,400);
 
     boolean normalising = true;
+    boolean drawAllLines = false;
+    boolean drawAllPoints = false;
 
     boolean camLock = false;
 
-    MoveableCube player = new MoveableCube(new Point(1,70,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93);
+    MoveableCube player = new MoveableCube(new Point(1,70,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93, "Player");
 
     MoveableCube cubeHolding = null;
 
@@ -46,14 +48,18 @@ public class Renderer extends JFrame{
         this.setVisible(true);
         g = this.getGraphics();
         camera = new Camera(new Vector2D(0,0), new VectorMD(1,Math.PI));
+        camera.zoom = 0.033;
         this.addKeyListener(kl);
-        World.ZERO = new Point();
         this.addMouseListener(ml);
+
+        World.ZERO = new Point();
         setBGValues();
+
         World.enabledDims[0] = true;
         World.enabledDims[1] = true;
         World.enabledDims[2] = true;
-        camera.zoom = 0.033;
+
+        World.level.addMovableCube(player);
     }
 
     public class mouseListener implements MouseListener{
@@ -156,10 +162,6 @@ public class Renderer extends JFrame{
                 player.addVelocityAxis(World.gravityAxis, 30);
             }
 
-            //System.out.println(player.getVelocityAxis(2));
-
-            player.update(dt);
-
             if(camLock) camera.pos = (World.convertPointVector2D(player.getMidpoint()));
 
             if(kl.isKeyPressed(KeyEvent.VK_P)) {
@@ -169,6 +171,7 @@ public class Renderer extends JFrame{
                     int lowestDistIndex = -1;
                     double lowestDist = Double.MAX_VALUE;
                     for (int i = 0; i < World.level.moveableCubes.length; i++) {
+                        if(World.level.moveableCubes[i].equals(player)) continue;
                         double dist = 0;
                         for (int j = 0; j < World.axisCount; j++) {
                             dist += Math.abs(player.getMidpointAxis(j)-World.level.moveableCubes[i].getMidpointAxis(j));
@@ -188,13 +191,6 @@ public class Renderer extends JFrame{
                 cubeHolding.setVelocity(new Point());
             }
 
-            for (Cube c : World.level.cubes) {
-                MoveableCube.resolveCollision(player, c);
-            }
-            for (Model m : World.level.models) {
-                MoveableCube.resolveCollision(player, m);
-            }
-
             // axies transformations
 
             if(ml.button3Down&&selectedAxis!=-1){
@@ -205,6 +201,8 @@ public class Renderer extends JFrame{
             }
 
             if(kl.isKeyPressed(KeyEvent.VK_N))normalising = !normalising;
+            if(kl.isKeyPressed(KeyEvent.VK_Z))drawAllLines = !drawAllLines;
+            if(kl.isKeyPressed(KeyEvent.VK_X))drawAllPoints = !drawAllPoints;
 
             if(kl.isKeyPressed(KeyEvent.VK_C))camLock = !camLock;
             
@@ -251,7 +249,7 @@ public class Renderer extends JFrame{
 
             kl.update();
 
-            World.level.update(player, dt);
+            World.level.update(dt);
 
             double t2 = System.nanoTime();
             dt = Math.min((t2-t1)/1000000000.0,0.05);
@@ -330,7 +328,7 @@ public class Renderer extends JFrame{
     }
 
     private void drawCube(Cube cube, Graphics g){
-        if(!cube.drawLines()&&!cube.drawPoints())return;
+        if(!(cube.drawLines()||drawAllLines)&&!(cube.drawPoints()||drawAllPoints))return;
         Color c = cube.getColor();
         double distance = 0;
         int disabledDimCount = 1;
@@ -356,11 +354,11 @@ public class Renderer extends JFrame{
             for (int j = 0; j < Cube.vertexes[0].length; j++) {
                 points[i].setAxis(j,cube.getPositionAxis(j)+cube.getSizeAxis(j)*Cube.vertexes[i][j]);
             }
-            if(cube.drawPoints())
+            if(cube.drawPoints()||drawAllPoints)
             drawCircle(cf(points[i]), g);
         }
 
-        if(cube.drawLines())
+        if(cube.drawLines()||drawAllLines)
         for (int i = 0; i < Cube.edges.length; i++) {
             drawLine(cf(points[Cube.edges[i][0]]), cf(points[Cube.edges[i][1]]), g);
         }
@@ -431,6 +429,10 @@ public class Renderer extends JFrame{
         }
 
         for (Cube cube: World.level.cubes) {
+            drawCube(cube, bg);
+        }
+
+        for (Cube cube: World.level.logicObjects) {
             drawCube(cube, bg);
         }
 

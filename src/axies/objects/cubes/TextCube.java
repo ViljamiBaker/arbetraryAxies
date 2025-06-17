@@ -1,6 +1,8 @@
-package axies.objects;
+package axies.objects.cubes;
 
 import java.awt.Color;
+
+import axies.objects.Point;
 
 public class TextCube extends Cube{
     double radius; 

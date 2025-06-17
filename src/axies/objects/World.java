@@ -1,5 +1,11 @@
 package axies.objects;
 
+import axies.objects.cubes.Cube;
+import axies.objects.cubes.MoveableCube;
+import axies.objects.cubes.TextCube;
+import axies.objects.logic.GenericLogicOBJ;
+import axies.objects.logic.LogicObject;
+import axies.objects.logic.TriggerArea;
 import axies.util.Vector2D;
 
 public class World {
@@ -79,12 +85,21 @@ public class World {
                     new Cube(new Point(3,6,3), new Point(3,1,3,2),false, true, false),
                 },
                 false)
-        });
+        },
+        new LogicObject[]{
+            new TriggerArea(new Point(5.1,1.1,9.1,0), new Point(0.8,0.8,0.8,0.8), "Test", "Player", "Moving"),
+            new GenericLogicOBJ("Test", new Runnable() {
+                @Override
+                public void run(){
+                    World.level.cubes[0].addPoisitionAxis(1, -1);
+                }
+            })
+        }
+        );
 
-    
-
-    
-
+        static{
+            level.initSync();
+        }
     
 
     public static Vector2D convertPointVector2D(Point initial){

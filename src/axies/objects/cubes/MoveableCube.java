@@ -1,6 +1,10 @@
-package axies.objects;
+package axies.objects.cubes;
 
 import java.awt.Color;
+
+import axies.objects.Model;
+import axies.objects.Point;
+import axies.objects.World;
 
 public class MoveableCube extends Cube{
 
@@ -109,14 +113,18 @@ public class MoveableCube extends Cube{
 
     private double groundDrag;
 
-    public MoveableCube(Point position, Point size, double drag, double groundDrag){
-        super(position, size, true,true,true, new Color(173, 101, 0));
+    public MoveableCube(Point position, Point size, double drag, double groundDrag, String tag){
+        super(position, size, true,true,true, new Color(173, 101, 0), tag);
         this.drag = drag;
         this.groundDrag = groundDrag;
     }
 
     public MoveableCube(Point position, Point size){
-        this(position, size, 0.98, 0.93);
+        this(position, size, 0.98, 0.93, "Moving");
+    }
+
+    public MoveableCube(Point position, Point size, String tag){
+        this(position, size, 0.98, 0.93, tag);
     }
 
     boolean isOnGround;

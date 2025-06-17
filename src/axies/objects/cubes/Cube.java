@@ -1,6 +1,9 @@
-package axies.objects;
+package axies.objects.cubes;
 
 import java.awt.Color;
+
+import axies.objects.Point;
+import axies.objects.World;
 
 public class Cube {
     public static int[][] vertexes;
@@ -35,28 +38,31 @@ public class Cube {
 
     private Point position;
     private Point size;
+
     private boolean drawPoints;
     private boolean drawLines;
     private boolean collidable;
 
+    private String tag;
+
     private Color c;
 
-    public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c){
+    public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c, String tag){
         this.position = position;
         this.size = size;
         this.drawPoints = drawPoints;
         this.drawLines = drawLines;
         this.collidable = collidable;
         this.c = c;
+        this.tag = tag;
+    }
+
+    public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c){
+        this(position, size, drawPoints, drawLines, collidable, Color.BLACK,"");
     }
 
     public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable){
-        this.position = position;
-        this.size = size;
-        this.drawPoints = drawPoints;
-        this.drawLines = drawLines;
-        this.collidable = collidable;
-        this.c = Color.BLACK;
+        this(position, size, drawPoints, drawLines, collidable, Color.BLACK);
     }
 
     public double getPositionAxis(int axis){
@@ -153,7 +159,16 @@ public class Cube {
         return true;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
     public Color getColor() {
         return c;
+    }
+
+    @Override
+    public String toString(){
+        return "Pos: " + position.toString() + " Size:" + size.toString() + " Tag:" + tag + " Color: " + c.toString();
     }
 }

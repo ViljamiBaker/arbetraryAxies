@@ -1,5 +1,7 @@
 package axies.objects;
 
+import axies.objects.cubes.Cube;
+
 // might be useless ngl
 public class Model {
     Cube[] cubes;

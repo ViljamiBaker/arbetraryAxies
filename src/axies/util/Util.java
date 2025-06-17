@@ -21,4 +21,13 @@ public class Util {
     public static boolean xor(boolean a, boolean b){
         return (a||b)&&!(a&&b);
     }
+
+    public static boolean arrayContains(Object[] o, Object c){
+        for (int i = 0; i < o.length; i++) {
+            if (o[i].equals(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
