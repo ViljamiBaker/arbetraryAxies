@@ -1,6 +1,6 @@
-package axies.objects;
+package axes.objects;
 
-import axies.objects.cubes.Cube;
+import axes.objects.cubes.Cube;
 
 // might be useless ngl
 public class Model {

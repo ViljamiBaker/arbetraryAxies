@@ -1,4 +1,4 @@
-package axies.util;
+package axes.util;
 
 public class Vector2D {
    public double x;

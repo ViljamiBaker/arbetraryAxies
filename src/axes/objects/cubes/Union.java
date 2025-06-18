@@ -1,7 +1,7 @@
-package axies.objects.cubes;
+package axes.objects.cubes;
 
-import axies.objects.Point;
-import axies.objects.World;
+import axes.objects.Point;
+import axes.objects.World;
 
 public class Union extends Cube{
     Cube negation;

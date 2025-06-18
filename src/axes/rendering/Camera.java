@@ -1,7 +1,7 @@
-package axies.rendering;
+package axes.rendering;
 
-import axies.util.Vector2D;
-import axies.util.VectorMD;
+import axes.util.Vector2D;
+import axes.util.VectorMD;
 
 public class Camera{
    public Vector2D pos;

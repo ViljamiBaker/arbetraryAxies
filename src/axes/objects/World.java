@@ -1,19 +1,19 @@
-package axies.objects;
+package axes.objects;
 
 import java.awt.Color;
 
-import axies.objects.cubes.Cube;
-import axies.objects.cubes.MoveableCube;
-import axies.objects.cubes.TextCube;
-import axies.objects.cubes.Union;
-import axies.objects.cubes.Water;
-import axies.objects.logic.CubeMover;
-import axies.objects.logic.GenericLogicOBJ;
-import axies.objects.logic.LogicObject;
-import axies.objects.logic.TriggerArea;
-import axies.objects.logic.TriggerMover;
-import axies.objects.logic.TriggerArea.TriggerAreaType;
-import axies.util.Vector2D;
+import axes.objects.cubes.Cube;
+import axes.objects.cubes.MoveableCube;
+import axes.objects.cubes.TextCube;
+import axes.objects.cubes.Union;
+import axes.objects.cubes.Water;
+import axes.objects.logic.CubeMover;
+import axes.objects.logic.GenericLogicOBJ;
+import axes.objects.logic.LogicObject;
+import axes.objects.logic.TriggerArea;
+import axes.objects.logic.TriggerMover;
+import axes.objects.logic.TriggerArea.TriggerAreaType;
+import axes.util.Vector2D;
 
 public class World {
     
@@ -35,7 +35,7 @@ public class World {
 
     static {Cube.calcCube();}
 
-    public static Level level = new Level(
+    public static Level level = new Level("Tutorial",
         new Cube[]{
             // walls
             new Union(

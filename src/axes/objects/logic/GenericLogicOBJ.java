@@ -1,4 +1,4 @@
-package axies.objects.logic;
+package axes.objects.logic;
 
 // runs a runnable once when activated
 public class GenericLogicOBJ extends LogicObject{

@@ -1,11 +1,11 @@
-package axies.objects.logic;
+package axes.objects.logic;
 
 import java.util.ArrayList;
 
-import axies.objects.Point;
-import axies.objects.World;
-import axies.objects.cubes.Cube;
-import axies.util.Util;
+import axes.objects.Point;
+import axes.objects.World;
+import axes.objects.cubes.Cube;
+import axes.util.Util;
 
 // activates while stuff is within the area
 public class TriggerArea extends LogicObject{
@@ -35,6 +35,10 @@ public class TriggerArea extends LogicObject{
         this.type = type;
     }
 
+    public TriggerAreaType getType() {
+        return type;
+    }
+
     @Override
     public void update(double dt){
 
@@ -61,6 +65,10 @@ public class TriggerArea extends LogicObject{
 
         cubesWithin.clear();
         cubesWithin.addAll(newCubesWithin);
+    }
+
+    public String[] getFilterTags() {
+        return filterTags;
     }
 
     @Override

@@ -1,10 +1,10 @@
-package axies.objects.logic;
+package axes.objects.logic;
 
 import java.awt.Color;
 
-import axies.objects.Point;
-import axies.objects.World;
-import axies.objects.cubes.Cube;
+import axes.objects.Point;
+import axes.objects.World;
+import axes.objects.cubes.Cube;
 // Base class, dont init
 public class LogicObject extends Cube{
 
@@ -29,6 +29,11 @@ public class LogicObject extends Cube{
     public LogicObject(Point pos, Point size, String tag, String targetTag){
         super(pos, size, false, false, false, Color.MAGENTA, tag);
         this.targetTag = targetTag;
+    }
+
+    // gets the target tag for saving and loading
+    public String getTargetTag() {
+        return targetTag;
     }
 
     // called every frame

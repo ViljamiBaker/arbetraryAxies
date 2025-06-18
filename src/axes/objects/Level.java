@@ -1,12 +1,13 @@
-package axies.objects;
+package axes.objects;
 
 import java.util.ArrayList;
 
-import axies.objects.cubes.Cube;
-import axies.objects.cubes.MoveableCube;
-import axies.objects.logic.LogicObject;
+import axes.objects.cubes.Cube;
+import axes.objects.cubes.MoveableCube;
+import axes.objects.logic.LogicObject;
 
 public class Level {
+    public String name;
     public Cube[] cubes;
     public Model[] models;
     public MoveableCube[] moveableCubes;
@@ -15,7 +16,8 @@ public class Level {
 
     public boolean win = false;
 
-    public Level(Cube[] cubes, MoveableCube[] moveableCubes, Model[] models, LogicObject[] logicObjects){
+    public Level(String name, Cube[] cubes, MoveableCube[] moveableCubes, Model[] models, LogicObject[] logicObjects){
+        this.name = name;
         this.cubes = cubes;
         this.moveableCubes = moveableCubes;
         this.models = models;

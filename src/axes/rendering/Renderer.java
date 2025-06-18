@@ -1,17 +1,18 @@
-package axies.rendering;
+package axes.rendering;
 
 import javax.swing.JFrame;
 
-import axies.objects.Model;
-import axies.objects.Point;
-import axies.objects.World;
-import axies.objects.cubes.Cube;
-import axies.objects.cubes.MoveableCube;
-import axies.objects.cubes.TextCube;
-import axies.objects.cubes.Union;
-import axies.util.Util;
-import axies.util.Vector2D;
-import axies.util.VectorMD;
+import axes.Loader;
+import axes.objects.Model;
+import axes.objects.Point;
+import axes.objects.World;
+import axes.objects.cubes.Cube;
+import axes.objects.cubes.MoveableCube;
+import axes.objects.cubes.TextCube;
+import axes.objects.cubes.Union;
+import axes.util.Util;
+import axes.util.Vector2D;
+import axes.util.VectorMD;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -89,6 +90,8 @@ public class Renderer extends JFrame{
                 }
             }
         }
+
+        Loader.save();
     }
 
     public class mouseListener implements MouseListener{
@@ -181,10 +184,10 @@ public class Renderer extends JFrame{
             }
 
             if(kl.isKeyDown(KeyEvent.VK_O)) {
-                player.addVelocityAxis(3, playerSpeed);
+                //player.addVelocityAxis(3, playerSpeed);
             }
             if(kl.isKeyDown(KeyEvent.VK_U)) {
-                player.addVelocityAxis(3, -playerSpeed);
+                //player.addVelocityAxis(3, -playerSpeed);
             }
 
             if(kl.isKeyPressed(KeyEvent.VK_SPACE)&&player.isOnGround()) {
@@ -405,9 +408,9 @@ public class Renderer extends JFrame{
         }
 
         if(cube instanceof TextCube){
-            if(player.getMidpoint().dist(cube.getMidpoint())<=((TextCube)cube).radius()||player.isCollidingWith(cube, false)){
+            if(player.getMidpoint().dist(cube.getMidpoint())<=((TextCube)cube).getRadius()||player.isCollidingWith(cube, false)){
                 Vector2D converted = cf(cube.getMidpoint());
-                String text = ((TextCube)cube).text();
+                String text = ((TextCube)cube).getText();
                 queuedStrings.add(new StringStruct(text,g.getFontMetrics().stringWidth(text),g.getFontMetrics().getHeight(), (int)converted.x, (int)converted.y));
             }
         }

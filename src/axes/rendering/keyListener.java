@@ -1,4 +1,4 @@
-package axies.rendering;
+package axes.rendering;
 
 import java.util.HashSet;
 import java.awt.event.KeyEvent;

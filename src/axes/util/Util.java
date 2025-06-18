@@ -1,7 +1,7 @@
-package axies.util;
+package axes.util;
 
-import axies.objects.Point;
-import axies.objects.World;
+import axes.objects.Point;
+import axes.objects.World;
 
 public class Util {
     public static int triangleNum(int i){

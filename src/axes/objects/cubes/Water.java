@@ -1,14 +1,18 @@
-package axies.objects.cubes;
+package axes.objects.cubes;
 
 import java.awt.Color;
 
-import axies.objects.Point;
-import axies.objects.World;
+import axes.objects.Point;
+import axes.objects.World;
 
 public class Water extends Cube{
 
     public Water(Point position, Point size){
-        super(position, size, false, true, false, new Color(23, 0, 196));
+        this(position,size,"");
+    }
+
+    public Water(Point position, Point size, String tag){
+        super(position, size, false, true, false, new Color(23, 0, 196),tag);
     }
 
     @Override

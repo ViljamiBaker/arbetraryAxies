@@ -1,10 +1,10 @@
-package axies.objects.cubes;
+package axes.objects.cubes;
 
 import java.awt.Color;
 
-import axies.objects.Model;
-import axies.objects.Point;
-import axies.objects.World;
+import axes.objects.Model;
+import axes.objects.Point;
+import axes.objects.World;
 
 public class MoveableCube extends Cube{
 
@@ -147,6 +147,14 @@ public class MoveableCube extends Cube{
 
     public boolean isOnGround() {
         return isOnGround;
+    }
+
+    public double getGroundDrag() {
+        return groundDrag;
+    }
+
+    public double getDrag() {
+        return drag;
     }
 
     @Override

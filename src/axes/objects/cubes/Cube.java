@@ -1,9 +1,9 @@
-package axies.objects.cubes;
+package axes.objects.cubes;
 
 import java.awt.Color;
 
-import axies.objects.Point;
-import axies.objects.World;
+import axes.objects.Point;
+import axes.objects.World;
 
 public class Cube {
     public static int[][] vertexes;

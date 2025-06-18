@@ -1,4 +1,4 @@
-package axies.objects;
+package axes.objects;
 
 import java.util.Arrays;
 

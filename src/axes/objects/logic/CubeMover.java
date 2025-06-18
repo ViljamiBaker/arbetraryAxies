@@ -1,9 +1,9 @@
-package axies.objects.logic;
+package axes.objects.logic;
 
-import axies.objects.Point;
-import axies.objects.World;
-import axies.objects.cubes.Cube;
-import axies.util.Util;
+import axes.objects.Point;
+import axes.objects.World;
+import axes.objects.cubes.Cube;
+import axes.util.Util;
 
 public class CubeMover extends LogicObject{
     private Point p1; 
@@ -38,6 +38,18 @@ public class CubeMover extends LogicObject{
             }
             targets[0].setPosition(Util.lerp(p1, p2, currentLerp));
         }
+    }
+
+    public Point getP1() {
+        return p1;
+    }
+    
+    public Point getP2() {
+        return p2;
+    }
+
+    public double getTime() {
+        return time;
     }
 
     @Override
