@@ -14,11 +14,25 @@ public class TriggerArea extends LogicObject{
 
     ArrayList<Cube> cubesWithin = new ArrayList<>();
 
+    TriggerAreaType type;
+
+    public enum TriggerAreaType{
+        ONOFF,
+        ON
+    }
+
     // creates a TriggerArea covering from pos to size that targets targetTag and looks for filterTag
     // if filterTag = "" then no filter is used
-    public TriggerArea(Point pos, Point size, String targetTag, String... filterTags){
+    public TriggerArea(Point pos, Point size, TriggerAreaType type, String targetTag, String... filterTags){
         super(pos, size, "", targetTag);
         this.filterTags = filterTags;
+        this.type = type;
+    }
+
+    public TriggerArea(Point pos, Point size, String tag, TriggerAreaType type, String targetTag, String... filterTags){
+        super(pos, size, tag, targetTag);
+        this.filterTags = filterTags;
+        this.type = type;
     }
 
     @Override
@@ -33,6 +47,7 @@ public class TriggerArea extends LogicObject{
         }
 
         if(newCubesWithin.size() == 0&& cubesWithin.size() != 0){
+            if(type == TriggerAreaType.ONOFF)
             for (Cube target : targets) {
                 ((LogicObject)target).deactivate();
             }
@@ -45,7 +60,6 @@ public class TriggerArea extends LogicObject{
         }
 
         cubesWithin.clear();
-
         cubesWithin.addAll(newCubesWithin);
     }
 

@@ -64,46 +64,10 @@ public class MoveableCube extends Cube{
         c1.addVelocityAxis(lowestDistIndex, -diffInVel/massc1);
         c2.addVelocityAxis(lowestDistIndex, diffInVel/massc2);
     }
-
-    public static void resolveCollision(MoveableCube mc, Cube nmc){
-        if(!mc.isCollidingWith(nmc,true)) return;
-        double lowestNewPos = -1;
-        int lowestDistIndex = -1;
-        double lowestDist = Double.MAX_VALUE;
-        for (int i = 0; i < World.axisCount; i++) {
-            if(!mc.isWithinAxis(i,nmc)) continue;
-            if(mc.getPositionAxis(i)<nmc.getPositionAxis(i)){
-                double newPos = nmc.getPositionAxis(i)-mc.getSizeAxis(i);
-                double distance = Math.abs(newPos-mc.getPositionAxis(i));
-                if(distance<lowestDist){
-                    lowestDistIndex = i;
-                    lowestDist = distance;
-                    lowestNewPos = newPos - 0.0000001;
-                }
-            }else{
-                double newPos = nmc.getPositionAxis(i)+nmc.getSizeAxis(i);
-                double distance = Math.abs(newPos-mc.getPositionAxis(i));
-                if(distance<lowestDist){
-                    lowestDistIndex = i;
-                    lowestDist = distance;
-                    lowestNewPos = newPos + 0.0000001;
-                }
-            }
-        }
-
-        if(lowestDistIndex == -1) return;
-
-        if(lowestDistIndex==World.gravityAxis){
-            mc.isOnGround = true;
-        }
-
-        mc.setPositionAxis(lowestDistIndex, lowestNewPos);
-        mc.setVelocityAxis(lowestDistIndex, 0);
-    }
     
     public static void resolveCollision(MoveableCube mc, Model m){
         for (Cube c : m.getCubes()) {
-            MoveableCube.resolveCollision(mc, c);
+            c.resolveCollision(mc);
         }
     }
 

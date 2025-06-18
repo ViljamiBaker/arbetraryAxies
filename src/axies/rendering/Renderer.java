@@ -8,16 +8,19 @@ import axies.objects.World;
 import axies.objects.cubes.Cube;
 import axies.objects.cubes.MoveableCube;
 import axies.objects.cubes.TextCube;
+import axies.objects.cubes.Union;
 import axies.util.Util;
 import axies.util.Vector2D;
 import axies.util.VectorMD;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Renderer extends JFrame{
     Graphics g;
@@ -26,19 +29,24 @@ public class Renderer extends JFrame{
     mouseListener ml = new mouseListener();
     private Vector2D center = new Vector2D(500,400);
 
+    int[] axisZDirs = {1,0,1,-1,-1,-1};
+
     boolean normalising = true;
     boolean drawAllLines = false;
     boolean drawAllPoints = false;
+    boolean guidelines = false;
 
-    boolean camLock = false;
+    boolean camLock = true;
 
-    MoveableCube player = new MoveableCube(new Point(1,70,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93, "Player");
+    MoveableCube player = null;
 
     MoveableCube cubeHolding = null;
 
     int selectedAxis = -1;
 
     int movingAxis = 0;
+
+    double playerSpeed = 0.2;
 
     public Renderer(){
         this.setTitle("yowza");
@@ -59,7 +67,28 @@ public class Renderer extends JFrame{
         World.enabledDims[1] = true;
         World.enabledDims[2] = true;
 
-        World.level.addMovableCube(player);
+        player = World.level.getMovableCubeWithTag("Player");
+
+        // quick doo doo solution to get around using 3d graphics
+        boolean sort = false;
+      
+        while(sort == false){
+            sort = true;
+            for(int i = 0; i<World.level.cubes.length-1; i++){
+                double distance0 = 0;
+                double distance1 = 0;
+                for (int j = 0; j < World.axisCount; j++) {
+                    distance0 += World.level.cubes[i].getPositionAxis(j)*axisZDirs[j];
+                    distance1 += World.level.cubes[i+1].getPositionAxis(j)*axisZDirs[j];
+                }
+                if(distance0<distance1){
+                    sort = false;
+                    Cube temp = World.level.cubes[i];
+                    World.level.cubes[i] = World.level.cubes[i+1];
+                    World.level.cubes[i+1] = temp;
+                }
+            }
+        }
     }
 
     public class mouseListener implements MouseListener{
@@ -138,24 +167,24 @@ public class Renderer extends JFrame{
 
             // player movement
             if(kl.isKeyDown(KeyEvent.VK_I)) {
-                player.addVelocityAxis(0, -0.2);
+                player.addVelocityAxis(0, -playerSpeed);
             }
             if(kl.isKeyDown(KeyEvent.VK_K)) {
-                player.addVelocityAxis(0, 0.2);
+                player.addVelocityAxis(0, playerSpeed);
             }
 
             if(kl.isKeyDown(KeyEvent.VK_L)) {
-                player.addVelocityAxis(2, 0.2);
+                player.addVelocityAxis(2, playerSpeed);
             }
             if(kl.isKeyDown(KeyEvent.VK_J)) {
-                player.addVelocityAxis(2, -0.2);
+                player.addVelocityAxis(2, -playerSpeed);
             }
 
             if(kl.isKeyDown(KeyEvent.VK_O)) {
-                player.addVelocityAxis(3, 0.2);
+                player.addVelocityAxis(3, playerSpeed);
             }
             if(kl.isKeyDown(KeyEvent.VK_U)) {
-                player.addVelocityAxis(3, -0.2);
+                player.addVelocityAxis(3, -playerSpeed);
             }
 
             if(kl.isKeyPressed(KeyEvent.VK_SPACE)&&player.isOnGround()) {
@@ -172,29 +201,32 @@ public class Renderer extends JFrame{
                     double lowestDist = Double.MAX_VALUE;
                     for (int i = 0; i < World.level.moveableCubes.length; i++) {
                         if(World.level.moveableCubes[i].equals(player)) continue;
-                        double dist = 0;
-                        for (int j = 0; j < World.axisCount; j++) {
-                            dist += Math.abs(player.getMidpointAxis(j)-World.level.moveableCubes[i].getMidpointAxis(j));
-                        }
+                        double dist = player.getMidpoint().dist(World.level.moveableCubes[i].getMidpoint());
                         if(dist<lowestDist){
                             lowestDistIndex = i;
                             lowestDist = dist;
                         }
                     }
-                    if(lowestDist<=1.5)
+                    if(lowestDist<=2.5){
                         cubeHolding = World.level.moveableCubes[lowestDistIndex];
+                        cubeHolding.setPosition(new Point(player.getPosition()).add(new Point(0,1,0)));
+                    }
                 }
             }
-
             if(cubeHolding != null){
-                cubeHolding.setPosition(new Point(player.getPosition()).add(new Point(0,1,0)));
-                cubeHolding.setVelocity(new Point());
+                if(new Point(player.getPosition()).add(new Point(0,1,0)).dist(cubeHolding.getPosition())>0.25){
+                    cubeHolding = null;
+                }else{
+                    cubeHolding.setPosition(new Point(player.getPosition()).add(new Point(0,1,0)));
+                    cubeHolding.setVelocity(new Point(player.getVelocity()));
+                }
             }
 
             // axies transformations
 
             if(ml.button3Down&&selectedAxis!=-1){
                 World.axies[selectedAxis] = convertFromCamera(new Vector2D(getMousePosition().x,getMousePosition().y));
+                camLock = false;
             }
             for (int i = 0; i < World.axisCount; i++) {
                 World.enabledDims[i] = (kl.isKeyPressed(keys1to9[i]) ? !World.enabledDims[i]:World.enabledDims[i]);
@@ -203,6 +235,8 @@ public class Renderer extends JFrame{
             if(kl.isKeyPressed(KeyEvent.VK_N))normalising = !normalising;
             if(kl.isKeyPressed(KeyEvent.VK_Z))drawAllLines = !drawAllLines;
             if(kl.isKeyPressed(KeyEvent.VK_X))drawAllPoints = !drawAllPoints;
+            if(kl.isKeyPressed(KeyEvent.VK_G))guidelines = !guidelines;
+            if(kl.isKeyPressed(KeyEvent.VK_PERIOD))System.out.println(player.getMidpoint().roundToInt());
 
             if(kl.isKeyPressed(KeyEvent.VK_C))camLock = !camLock;
             
@@ -225,27 +259,27 @@ public class Renderer extends JFrame{
                 }
             }
 
-            if(kl.isKeyDown(KeyEvent.VK_T)) {
-                Vector2D[] nwa = new Vector2D[World.axisCount];
-                for (int i = 0; i < World.axies.length; i++) {
-                    Point convPoint = new Point();
-                    convPoint.setAxis(i, 1);
-                    convPoint.rotateAbout(1, 0.03);
-                    nwa[i] = World.convertPointVector2D(convPoint);
-                }
-                World.axies = nwa;
-            }
+            //if(kl.isKeyDown(KeyEvent.VK_T)) {
+            //    Vector2D[] nwa = new Vector2D[World.axisCount];
+            //    for (int i = 0; i < World.axies.length; i++) {
+            //        Point convPoint = new Point();
+            //        convPoint.setAxis(i, 1);
+            //        convPoint.rotateAbout(1, 0.01);
+            //        nwa[i] = World.convertPointVector2D(convPoint);
+            //    }
+            //    World.axies = nwa;
+            //}
 
-            if(kl.isKeyDown(KeyEvent.VK_G)) {
-                Vector2D[] nwa = new Vector2D[World.axisCount];
-                for (int i = 0; i < World.axies.length; i++) {
-                    Point convPoint = new Point();
-                    convPoint.setAxis(i, 1);
-                    convPoint.rotateAbout(1, -0.03);
-                    nwa[i] = World.convertPointVector2D(convPoint);
-                }
-                World.axies = nwa;
-            }
+            //if(kl.isKeyDown(KeyEvent.VK_G)) {
+            //    Vector2D[] nwa = new Vector2D[World.axisCount];
+            //    for (int i = 0; i < World.axies.length; i++) {
+            //        Point convPoint = new Point();
+            //        convPoint.setAxis(i, 1);
+            //        convPoint.rotateAbout(1, -0.01);
+            //        nwa[i] = World.convertPointVector2D(convPoint);
+            //    }
+            //    World.axies = nwa;
+            //}
 
             kl.update();
 
@@ -302,29 +336,35 @@ public class Renderer extends JFrame{
             }
             point.setAxis(i, 10);
             drawLine(cf(World.ZERO), cf(point) ,g);
+            if(guidelines)drawLine(cf(player.getMidpoint().add(i, -10)), cf(player.getMidpoint().add(i, 10)) ,g);
         }
-        for (int h = 0; h < pairs.length; h++) {
-            Color ac1 = axisColors[pairs[h][0]];
-            Color ac2 = axisColors[pairs[h][1]];
-            g.setColor(new Color((ac1.getRed()+ac2.getRed())/2, (ac1.getGreen()+ac2.getGreen())/2, (ac1.getBlue()+ac2.getBlue())/2, 128));
-            for (int i = 1; i <= gridCount; i++) {
-                Point v1 = new Point();
-                Point v2 = new Point();
+        
+        //for (int h = 0; h < pairs.length; h++) {
+        //    Color ac1 = axisColors[pairs[h][0]];
+        //    Color ac2 = axisColors[pairs[h][1]];
+        //    g.setColor(new Color((ac1.getRed()+ac2.getRed())/2, (ac1.getGreen()+ac2.getGreen())/2, (ac1.getBlue()+ac2.getBlue())/2, 128));
+        //    for (int i = 1; i <= gridCount; i++) {
+        //        Point v1 = new Point();
+        //        Point v2 = new Point();
 
-                v1.setAxis(pairs[h][0], i);
-                v2.setAxis(pairs[h][0], i);
-                v2.setAxis(pairs[h][1], 10);
-                drawLine(cf(v1),cf(v2),g);
+        //        v1.setAxis(pairs[h][0], i);
+        //        v2.setAxis(pairs[h][0], i);
+        //        v2.setAxis(pairs[h][1], 10);
+        //        drawLine(cf(v1),cf(v2),g);
 
-                Point h1 = new Point();
-                Point h2 = new Point();
+        //        Point h1 = new Point();
+        //        Point h2 = new Point();
 
-                h1.setAxis(pairs[h][1], i);
-                h2.setAxis(pairs[h][1], i);
-                h2.setAxis(pairs[h][0], 10);
-                drawLine(cf(h1),cf(h2),g);
-            }
-        }
+        //        h1.setAxis(pairs[h][1], i);
+        //        h2.setAxis(pairs[h][1], i);
+        //        h2.setAxis(pairs[h][0], 10);
+        //        drawLine(cf(h1),cf(h2),g);
+        //    }
+        //}
+    }
+
+    private record StringStruct(String todraw, int width, int height, int x, int y){
+
     }
 
     private void drawCube(Cube cube, Graphics g){
@@ -347,7 +387,8 @@ public class Renderer extends JFrame{
         distance = Math.sqrt(distance);
         double opacity = Math.max(1.0-distance, 0)/disabledDimCount;
 
-        g.setColor(new Color(c.getRed(),c.getBlue(),c.getGreen(),(int)(opacity*255.0)));
+        g.setColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),(int)(opacity*255.0)));
+
         Point[] points = new Point[Cube.vertexes.length];
         for (int i = 0; i < Cube.vertexes.length; i++) {
             points[i] = new Point();
@@ -365,10 +406,16 @@ public class Renderer extends JFrame{
 
         if(cube instanceof TextCube){
             if(player.getMidpoint().dist(cube.getMidpoint())<=((TextCube)cube).radius()||player.isCollidingWith(cube, false)){
-                g.setColor(Color.BLACK);        
                 Vector2D converted = cf(cube.getMidpoint());
                 String text = ((TextCube)cube).text();
-                g.drawString(text, (int)converted.x - g.getFontMetrics().stringWidth(text)/2, (int)converted.y - g.getFontMetrics().getHeight()/2);
+                queuedStrings.add(new StringStruct(text,g.getFontMetrics().stringWidth(text),g.getFontMetrics().getHeight(), (int)converted.x, (int)converted.y));
+            }
+        }
+
+        if(cube instanceof Union){
+            drawCube(((Union)cube).getNegation(), g);
+            for (Cube c2 : ((Union)cube).getAlternateCubes()) {
+                drawCube(c2, g);
             }
         }
         g.setColor(c);
@@ -412,11 +459,14 @@ public class Renderer extends JFrame{
         g.setColor(c);*/
     }
 
+    ArrayList<StringStruct> queuedStrings = new ArrayList<>();
+
     public void paint(){
         if(g == null)return;
 
         BufferedImage buff = new BufferedImage(1000, 800, BufferedImage.TYPE_INT_ARGB);
         Graphics bg = buff.getGraphics();
+        bg.setFont(new Font("Consolas", Font.PLAIN, 20));
         bg.setColor(Color.WHITE);
         bg.fillRect(0, 0, 1000, 800);
 
@@ -447,6 +497,22 @@ public class Renderer extends JFrame{
 
         bg.setColor(new Color(123,78,23));
         drawCube(player, bg);
+
+        bg.setColor(Color.BLACK);
+
+        if(World.level.win){
+            String text = "You win the tutorial";
+            queuedStrings.add(new StringStruct(text,g.getFontMetrics().stringWidth(text),g.getFontMetrics().getHeight(), 500, 400));
+        }
+
+        for (StringStruct ps : queuedStrings) {
+            bg.setColor(new Color(255,0,0,192));
+            bg.fillRect(ps.x-ps.width/2, ps.y-(int)(ps.height*1.2), ps.width, ps.height);
+            bg.setColor(Color.BLACK);
+            bg.drawString(ps.todraw, ps.x-ps.width/2, ps.y-ps.height/2);
+        }
+
+        queuedStrings.clear();
 
         g.drawImage(buff, 0, 0, null);
     }

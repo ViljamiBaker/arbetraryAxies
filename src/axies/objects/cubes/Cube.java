@@ -47,6 +47,9 @@ public class Cube {
 
     private Color c;
 
+        
+
+
     public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c, String tag){
         this.position = position;
         this.size = size;
@@ -57,8 +60,12 @@ public class Cube {
         this.tag = tag;
     }
 
+    public Cube(Cube cloneFrom){
+        this(cloneFrom.position, cloneFrom.size, cloneFrom.drawPoints, cloneFrom.drawLines, cloneFrom.collidable, cloneFrom.c, cloneFrom.tag);
+    }
+
     public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable, Color c){
-        this(position, size, drawPoints, drawLines, collidable, Color.BLACK,"");
+        this(position, size, drawPoints, drawLines, collidable, c,"");
     }
 
     public Cube(Point position, Point size, boolean drawPoints, boolean drawLines, boolean collidable){
@@ -159,12 +166,64 @@ public class Cube {
         return true;
     }
 
+    public boolean isOtherFullyWithin(Cube other, boolean collide){
+        if(!(this.collidable()&&other.collidable())&&collide) return false;
+
+        for (int i = 0; i < World.axisCount; i++) {
+            if(!(other.position.getAxis(i)+other.size.getAxis(i)<=position.getAxis(i)+size.getAxis(i)&&
+                position.getAxis(i)<=other.position.getAxis(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void resolveCollision(MoveableCube mc){
+        if(!mc.isCollidingWith(this,true)) return;
+        double lowestNewPos = -1;
+        int lowestDistIndex = -1;
+        double lowestDist = Double.MAX_VALUE;
+        for (int i = 0; i < World.axisCount; i++) {
+            if(!mc.isWithinAxis(i,this)) continue;
+            if(mc.getPositionAxis(i)<this.getPositionAxis(i)){
+                double newPos = this.getPositionAxis(i)-mc.getSizeAxis(i);
+                double distance = Math.abs(newPos-mc.getPositionAxis(i));
+                if(distance<lowestDist){
+                    lowestDistIndex = i;
+                    lowestDist = distance;
+                    lowestNewPos = newPos - 0.0000001;
+                }
+            }else{
+                double newPos = this.getPositionAxis(i)+this.getSizeAxis(i);
+                double distance = Math.abs(newPos-mc.getPositionAxis(i));
+                if(distance<lowestDist){
+                    lowestDistIndex = i;
+                    lowestDist = distance;
+                    lowestNewPos = newPos + 0.0000001;
+                }
+            }
+        }
+        
+        if(lowestDistIndex == -1) return;
+
+        if(lowestDistIndex==World.gravityAxis){
+            mc.isOnGround = true;
+        }
+
+        mc.setPositionAxis(lowestDistIndex, lowestNewPos);
+        mc.setVelocityAxis(lowestDistIndex, 0);
+    }
+
     public String getTag() {
         return tag;
     }
 
     public Color getColor() {
         return c;
+    }
+
+    public void setCollidable(boolean collidable) {
+        this.collidable = collidable;
     }
 
     @Override

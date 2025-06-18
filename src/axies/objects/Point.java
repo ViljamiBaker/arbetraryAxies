@@ -105,6 +105,13 @@ public class Point {
         }
     }
 
+    public Point roundToInt(){
+        for (int i = 0; i < World.axisCount; i++) {
+            setAxis(i, (int)getAxis(i));
+        }
+        return this;
+    }
+
     @Override
     public String toString(){
         return Arrays.toString(position);

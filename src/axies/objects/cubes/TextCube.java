@@ -13,6 +13,12 @@ public class TextCube extends Cube{
         this.radius = radius;
     }
 
+    public TextCube(Point position, double radius, String text){
+        super(position, new Point(0.4,0.4,0.4,0.4), true, true, false, new Color(46, 255, 227));
+        this.text = text;
+        this.radius = radius;
+    }
+
     public String text(){
         return text;
     }

@@ -12,6 +12,8 @@ public class LogicObject extends Cube{
 
     protected String targetTag;
 
+    protected boolean enabled = false;
+
     // creates a VISIBLE LogicObject, tag is for THIS, targetTag is what the TARGETS have
     public LogicObject(Point pos, Point size, boolean collide, Color c, String tag, String targetTag){
         super(pos, size, true, true, collide, c, tag);

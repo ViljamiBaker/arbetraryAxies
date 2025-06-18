@@ -13,6 +13,8 @@ public class Level {
     public LogicObject[] logicObjects;
     public Cube[] allCubes;
 
+    public boolean win = false;
+
     public Level(Cube[] cubes, MoveableCube[] moveableCubes, Model[] models, LogicObject[] logicObjects){
         this.cubes = cubes;
         this.moveableCubes = moveableCubes;
@@ -60,7 +62,7 @@ public class Level {
         }
         for (MoveableCube mc: moveableCubes) {
             for (Cube c : cubes) {
-                MoveableCube.resolveCollision(mc, c);
+                c.resolveCollision(mc);
             }
             for (Model m : models) {
                 MoveableCube.resolveCollision(mc, m);
@@ -70,7 +72,7 @@ public class Level {
 
     public boolean isWithinCubes(Cube test){
         for (Cube c : cubes) {
-            if(test.isCollidingWith(c,true)){
+            if(c.isCollidingWith(test,true)){
                 return true;
             }
         }
@@ -79,6 +81,15 @@ public class Level {
 
     public Cube getCubeWithTag(String tag){
         for (Cube cube : cubes) {
+            if(cube.getTag().equals(tag)){
+                return cube;
+            }
+        }
+        return null;
+    }
+
+    public MoveableCube getMovableCubeWithTag(String tag){
+        for (MoveableCube cube : moveableCubes) {
             if(cube.getTag().equals(tag)){
                 return cube;
             }
@@ -146,7 +157,6 @@ public class Level {
     public LogicObject[] getAllLOBJsWithTag(String tag){
         ArrayList<LogicObject> lobjs = new ArrayList<>();
         for (LogicObject logicObject : logicObjects) {
-            System.out.println(logicObject.getTag());
             if(logicObject.getTag().equals(tag)){
                 lobjs.add(logicObject);
             }
