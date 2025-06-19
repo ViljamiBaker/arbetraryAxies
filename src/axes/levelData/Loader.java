@@ -1,4 +1,4 @@
-package axes;
+package axes.levelData;
 
 import java.awt.Color;
 import java.io.File;
@@ -17,10 +17,12 @@ import axes.objects.cubes.Union;
 import axes.objects.cubes.Water;
 import axes.objects.logic.CubeMover;
 import axes.objects.logic.GenericLogicOBJ;
+import axes.objects.logic.LevelWinArea;
 import axes.objects.logic.LogicObject;
 import axes.objects.logic.TriggerArea;
 import axes.objects.logic.TriggerMover;
 import axes.objects.logic.TriggerArea.TriggerAreaType;
+import axes.rendering.Renderer;
 
 // LEVEL THINGY
 // Number of dims, number of boxes, number of Movable boxes, Number of Logic objects
@@ -43,22 +45,22 @@ public class Loader {
 
     private static void savePoint(Point p, FileWriter fw) throws IOException{
         for (int i = 0; i < World.axisCount; i++) {
-            fw.write(p.getAxis(i) + ",");
+            fw.write(p.getAxis(i) + "|");
         }
     }
 
     private static void saveBool(boolean b, FileWriter fw) throws IOException{
-        fw.write((b?1:0)+",");
+        fw.write((b?1:0)+"|");
     }
 
     private static void saveColor(Color c, FileWriter fw) throws IOException{
-        fw.write(c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",");
+        fw.write(c.getRed() + "|" + c.getGreen() + "|" + c.getBlue() + "|");
     }
 
     private static Point loadPoint(Scanner sc) throws IOException{
         Point p = new Point();
         for (int i = 0; i < World.axisCount; i++) {
-            p.setAxis(i,sc.nextDouble());
+            p.setAxis(i,Double.valueOf(sc.next()));
         }
         return p;
     }
@@ -80,75 +82,81 @@ public class Loader {
         TRIGGERAREA,
         TRIGGERMOVER,
         CUBEMOVER,
-        GENERICLOGICOBJ
+        GENERICLOGICOBJ,
+        LEVELWINAREA
     }
 
     private static void saveCube(Cube c, FileWriter fw) throws IOException{
         if(c instanceof TriggerArea){
-            fw.write(TYPE.TRIGGERAREA.toString() + ",");
+            fw.write(TYPE.TRIGGERAREA.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
-            fw.write(c.getTag()+",");
-            fw.write(((TriggerArea)c).getType().toString()+",");
-            fw.write(((TriggerArea)c).getTargetTag()+",");
-            fw.write(((TriggerArea)c).getFilterTags().length+",");
+            fw.write(c.getTag()+"|");
+            fw.write(((TriggerArea)c).getType().toString()+"|");
+            fw.write(((TriggerArea)c).getTargetTag()+"|");
+            fw.write(((TriggerArea)c).getFilterTags().length+"|");
             for (int i = 0; i < ((TriggerArea)c).getFilterTags().length; i++) {
-                fw.write(((TriggerArea)c).getFilterTags()[i]+",");
+                fw.write(((TriggerArea)c).getFilterTags()[i]+"|");
             }
         }else if(c instanceof TriggerMover){
-            fw.write(TYPE.TRIGGERMOVER.toString() + ",");
-            fw.write(c.getTag()+",");
-            fw.write(((TriggerMover)c).getTargetTag()+",");
+            fw.write(TYPE.TRIGGERMOVER.toString() + "|");
+            fw.write(c.getTag()+"|");
+            fw.write(((TriggerMover)c).getTargetTag()+"|");
             savePoint(((TriggerMover)c).getP1(), fw);
             savePoint(((TriggerMover)c).getP2(), fw);
-            fw.write(((TriggerMover)c).getTime()+",");
+            fw.write(((TriggerMover)c).getTime()+"|");
+        }else if(c instanceof LevelWinArea){
+            fw.write(TYPE.LEVELWINAREA.toString() + "|");
+            savePoint(c.getPosition(), fw);
+            savePoint(c.getSize(), fw);
+            fw.write(c.getTag()+"|");
         }else if(c instanceof CubeMover){
-            fw.write(TYPE.CUBEMOVER.toString() + ",");
-            fw.write(c.getTag()+",");
-            fw.write(((CubeMover)c).getTargetTag()+",");
+            fw.write(TYPE.CUBEMOVER.toString() + "|");
+            fw.write(c.getTag()+"|");
+            fw.write(((CubeMover)c).getTargetTag()+"|");
             savePoint(((CubeMover)c).getP1(), fw);
             savePoint(((CubeMover)c).getP2(), fw);
-            fw.write(((CubeMover)c).getTime()+",");
+            fw.write(((CubeMover)c).getTime()+"|");
         }else if(c instanceof GenericLogicOBJ){
             System.out.println("Cant save generic obj :(");
         }else if(c instanceof MoveableCube){
-            fw.write(TYPE.MOVABLEBOX.toString() + ",");
+            fw.write(TYPE.MOVABLEBOX.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
-            fw.write(((MoveableCube)c).getDrag()+",");
-            fw.write(((MoveableCube)c).getGroundDrag()+",");
-            fw.write(c.getTag()+",");
+            fw.write(((MoveableCube)c).getDrag()+"|");
+            fw.write(((MoveableCube)c).getGroundDrag()+"|");
+            fw.write(c.getTag()+"|");
         }else if(c instanceof Union){
-            fw.write(TYPE.UNION.toString() + ",");
+            fw.write(TYPE.UNION.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
             saveBool(c.drawPoints(),fw);
             saveBool(c.drawLines(),fw);
             saveBool(c.collidable(),fw);
             saveColor(c.getColor(),fw);
-            fw.write(c.getTag()+",");
+            fw.write(c.getTag()+"|");
             saveCube(((Union)c).getNegation(), fw);
         }else if(c instanceof Water){
-            fw.write(TYPE.WATER.toString() + ",");
+            fw.write(TYPE.WATER.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
-            fw.write(c.getTag()+",");
+            fw.write(c.getTag()+"|");
         }else if(c instanceof TextCube){
-            fw.write(TYPE.TXTCUBE.toString() + ",");
+            fw.write(TYPE.TXTCUBE.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
-            fw.write(((TextCube)c).getRadius()+",");
-            fw.write("\""+((TextCube)c).getText()+"\",");
-            fw.write(c.getTag()+",");
+            fw.write(((TextCube)c).getRadius()+"|");
+            fw.write(((TextCube)c).getText()+"|");
+            fw.write(c.getTag()+"|");
         }else if(c instanceof Cube){
-            fw.write(TYPE.CUBE.toString() + ",");
+            fw.write(TYPE.CUBE.toString() + "|");
             savePoint(c.getPosition(), fw);
             savePoint(c.getSize(), fw);
             saveBool(c.drawPoints(),fw);
             saveBool(c.drawLines(),fw);
             saveBool(c.collidable(),fw);
             saveColor(c.getColor(),fw);
-            fw.write(c.getTag()+",");
+            fw.write(c.getTag()+"|");
         }
     }
 
@@ -184,22 +192,28 @@ public class Loader {
                 targetTag = sc.next();
                 p1 = loadPoint(sc);
                 p2 = loadPoint(sc);
-                time = sc.nextDouble();
+                time = Double.valueOf(sc.next());
                 rc = new TriggerMover(tag, targetTag, p1, p2, time);
+                break;
+            case LEVELWINAREA:
+                pos = loadPoint(sc);
+                size = loadPoint(sc);
+                tag = sc.next();
+                rc = new LevelWinArea(pos, size, tag);
                 break;
             case CUBEMOVER:
                 tag = sc.next();
                 targetTag = sc.next();
                 p1 = loadPoint(sc);
                 p2 = loadPoint(sc);
-                time = sc.nextDouble();
+                time = Double.valueOf(sc.next());
                 rc = new CubeMover(tag, targetTag, p1, p2, time);
                 break;
             case MOVABLEBOX:
                 pos = loadPoint(sc);
                 size = loadPoint(sc);
-                double drag = sc.nextDouble();
-                double groundDrag = sc.nextDouble();
+                double drag = Double.valueOf(sc.next());
+                double groundDrag = Double.valueOf(sc.next());
                 tag = sc.next();
                 rc = new MoveableCube(pos, size, drag, groundDrag, tag);
                 break;
@@ -222,7 +236,7 @@ public class Loader {
             case TXTCUBE:
                 pos = loadPoint(sc);
                 size = loadPoint(sc);
-                double radius = sc.nextDouble();
+                double radius = Double.valueOf(sc.next());
                 String text = sc.next();
                 tag = sc.next();
                 rc = new TextCube(pos, size, radius, text, tag);
@@ -250,10 +264,10 @@ public class Loader {
             File datafile = new File(System.getProperty("user.dir") + "/src/axes/levelData/leveldat" + World.level.name + ".txt");
             datafile.createNewFile();
             FileWriter fw = new FileWriter(datafile, true);
-            fw.write(World.axisCount + ",");
-            fw.write(World.level.cubes.length + ",");
-            fw.write(World.level.moveableCubes.length + ",");
-            fw.write(World.level.logicObjects.length + ",");
+            fw.write(World.axisCount + "|");
+            fw.write(World.level.cubes.length + "|");
+            fw.write(World.level.moveableCubes.length + "|");
+            fw.write(World.level.logicObjects.length + "|");
             for (int i = 0; i < World.level.cubes.length; i++) {
                 Cube c = World.level.cubes[i];
                 saveCube(c, fw);
@@ -277,7 +291,7 @@ public class Loader {
         try {
             File datafile = new File(System.getProperty("user.dir") + "/src/axes/levelData/leveldat" + name + ".txt");
             Scanner sc = new Scanner(datafile);
-            sc.useDelimiter(",");
+            sc.useDelimiter("[|]");
             int axisCount = sc.nextInt();
             World.axisCount = axisCount;
             int cCount = sc.nextInt();
@@ -295,10 +309,13 @@ public class Loader {
             for (int i = 0; i < lobjCount; i++) {
                 logicObjects[i] = (LogicObject)loadCube(sc);
             }
-            World.level = new Level(name, cubes, movableCubes, new Model[0], logicObjects);
             sc.close();
+            World.level = new Level(name, cubes, movableCubes, new Model[0], logicObjects);
+            World.level.initSync();
+
+            Renderer.intitLevel();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
         return l;
     }

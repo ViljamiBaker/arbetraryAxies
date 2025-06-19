@@ -25,6 +25,7 @@ public class CubeMover extends LogicObject{
             double speed = 1.0/time*dt;
             if(currentLerp+speed>1){
                 currentLerp = 1;
+                doneMoving();
             }else{
                 currentLerp += speed;
             }
@@ -33,12 +34,15 @@ public class CubeMover extends LogicObject{
             double speed = -1.0/time*dt;
             if(currentLerp+speed<0){
                 currentLerp = 0;
+                doneMoving();
             }else{
                 currentLerp += speed;
             }
             targets[0].setPosition(Util.lerp(p1, p2, currentLerp));
         }
     }
+
+    protected void doneMoving(){}
 
     public Point getP1() {
         return p1;

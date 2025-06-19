@@ -9,6 +9,7 @@ import axes.objects.cubes.Union;
 import axes.objects.cubes.Water;
 import axes.objects.logic.CubeMover;
 import axes.objects.logic.GenericLogicOBJ;
+import axes.objects.logic.LevelWinArea;
 import axes.objects.logic.LogicObject;
 import axes.objects.logic.TriggerArea;
 import axes.objects.logic.TriggerMover;
@@ -17,11 +18,11 @@ import axes.util.Vector2D;
 
 public class World {
     
-    public static Vector2D[] axies = {new Vector2D(1,-0.3), new Vector2D(0,1), new Vector2D(-0.9,-0.4), new Vector2D(-0.9,0.7)};//, new Vector2D(0.9,0.7)};
+    public static Vector2D[] axes = {new Vector2D(1,-0.3), new Vector2D(0,1), new Vector2D(-0.9,-0.4), new Vector2D(-0.9,0.7)};//, new Vector2D(0.9,0.7)};
 
     public static Point ZERO = new Point();
 
-    public static int axisCount = axies.length;
+    public static int axisCount = axes.length;
 
     public static int gravityAxis = 1;
 
@@ -35,7 +36,7 @@ public class World {
 
     static {Cube.calcCube();}
 
-    public static Level level = new Level("Tutorial",
+    public static Level level = null;/*new Level("Tutorial",
         new Cube[]{
             // walls
             new Union(
@@ -76,9 +77,9 @@ public class World {
             // tutorial text
             new TextCube(new Point(15.3, 1.3, 1.3, 0.3),1, "Hello, I am a tutorial cube! Use IJKL to move."), 
             new TextCube(new Point(15.3, 1.3, 3.3, 0.3),1, "Don't like following the player? press C to unlock the camera and WASD to move it!"), 
-            new TextCube(new Point(15.3, 1.3, 5.3, 0.3),1, "Dislike the way things look, see those little circles at the origin? Those are axies, left click them and right click to move them!"), 
+            new TextCube(new Point(15.3, 1.3, 5.3, 0.3),1, "Dislike the way things look, see those little circles at the origin? Those are axes, left click them and right click to move them!"), 
             new TextCube(new Point(15.3, 0.7, 5.3, 0.3),1, "(this disables player camera (C to turn back on))"), 
-            new TextCube(new Point(15.3, 1.3, 7.3, 0.3),1, "Can't tell depth? try pressing G and moving the axies!"), 
+            new TextCube(new Point(15.3, 1.3, 7.3, 0.3),1, "Can't tell depth? try pressing G and moving the axes!"), 
 
             new TextCube(new Point(15.3, 1.3, 12.3, 0.3),1, "Ok, lets do something more difficult, press space to jump onto that ledge."), 
             new TextCube(new Point(11.3,4.3,12.3,0.3),1, "I knew you could do it :) follow the cubes with points to continue."), 
@@ -133,19 +134,12 @@ public class World {
             new TriggerArea(new Point(7.0,1.0,7.5,5.0), new Point(1,1,1,1), TriggerAreaType.ON, "WinregionMover", "Player"),
             new TriggerMover("WinregionMover", "Winregion", new Point(13.0, 1.0, 8.0, 9.0), new Point(13.0, 1.0, 8.0, 5.0), 3),
             new CubeMover("WinregionMover", "Winregion", new Point(13.0, 1.0, 8.0,9.0), new Point(13.0, 1.0, 8.0, 5.0), 3),
-            new TriggerArea(new Point(13.0, 1.0, 8.0,9.0), new Point(1,1,1,1), "Winregion", TriggerAreaType.ON, "Win", "Player"),
-            new GenericLogicOBJ("Win", 
-                new Runnable() {
-                    @Override
-                    public void run(){
-                        World.level.win = true;
-                    }
-                }),
+            new LevelWinArea(new Point(13.0, 1.0, 8.0,9.0), new Point(1,1,1,1), "Winregion"),
         }
         );
         static{
             level.initSync();
-        }
+        }*/
     
 
     public static Vector2D convertPointVector2D(Point initial){
@@ -153,7 +147,7 @@ public class World {
 
         for (int i = 0; i < World.axisCount; i++) {
             if(!enabledDims[i])continue;
-            out = out.add(World.axies[i].multiply(initial.getAxis(i)));
+            out = out.add(World.axes[i].multiply(initial.getAxis(i)));
         }
 
         return out;

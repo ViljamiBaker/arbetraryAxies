@@ -1,4 +1,4 @@
-a small "Game" about having many different axies of travel
+a small "Game" about having many different axes of travel
 
 ## TO RUN:
 run java on Renderer.java
@@ -13,7 +13,7 @@ Left click: select axis (colored circle)
 Middle click: deselect axis
 Right click: move axis to mouse
 
-N: Change if axies are normalised (on by default)
+N: Change if axes are normalised (on by default)
 
 T/G: rotate about the y axis (not great)
 

@@ -15,4 +15,9 @@ public class TriggerMover extends CubeMover{
         targets = new Cube[1];
         targets[0] = World.level.getLOBJWithTag(targetTag);
     }
+
+    @Override
+    protected void doneMoving() {
+        ((LogicObject)targets[0]).enabled = enabled;
+    }
 }

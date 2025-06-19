@@ -2,7 +2,7 @@ package axes.rendering;
 
 import javax.swing.JFrame;
 
-import axes.Loader;
+import axes.levelData.Loader;
 import axes.objects.Model;
 import axes.objects.Point;
 import axes.objects.World;
@@ -30,7 +30,7 @@ public class Renderer extends JFrame{
     mouseListener ml = new mouseListener();
     private Vector2D center = new Vector2D(500,400);
 
-    int[] axisZDirs = {1,0,1,-1,-1,-1};
+    static int[] axisZDirs = {1,0,1,-1,-1,-1};
 
     boolean normalising = true;
     boolean drawAllLines = false;
@@ -39,7 +39,7 @@ public class Renderer extends JFrame{
 
     boolean camLock = true;
 
-    MoveableCube player = null;
+    static MoveableCube player = null;
 
     MoveableCube cubeHolding = null;
 
@@ -49,21 +49,7 @@ public class Renderer extends JFrame{
 
     double playerSpeed = 0.2;
 
-    public Renderer(){
-        this.setTitle("yowza");
-        this.setSize(1000,800);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-        this.setVisible(true);
-        g = this.getGraphics();
-        camera = new Camera(new Vector2D(0,0), new VectorMD(1,Math.PI));
-        camera.zoom = 0.033;
-        this.addKeyListener(kl);
-        this.addMouseListener(ml);
-
-        World.ZERO = new Point();
-        setBGValues();
-
+    public static void intitLevel(){
         World.enabledDims[0] = true;
         World.enabledDims[1] = true;
         World.enabledDims[2] = true;
@@ -90,8 +76,28 @@ public class Renderer extends JFrame{
                 }
             }
         }
+    }
 
-        Loader.save();
+    public Renderer(){
+        this.setTitle("yowza");
+        this.setSize(1000,800);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.setVisible(true);
+        g = this.getGraphics();
+        camera = new Camera(new Vector2D(0,0), new VectorMD(1,Math.PI));
+        camera.zoom = 0.033;
+        this.addKeyListener(kl);
+        this.addMouseListener(ml);
+
+        World.ZERO = new Point();
+        setBGValues();
+
+        Loader.load("Tutorial");
+
+        Renderer.intitLevel();
+
+        //Loader.save();
     }
 
     public class mouseListener implements MouseListener{
@@ -117,7 +123,7 @@ public class Renderer extends JFrame{
                 double lowestDist = 1000000;
                 for (int i = 0; i < World.axisCount; i++) {
                     if(!World.enabledDims[i])continue;
-                    double dist = World.axies[i].add(convertFromCamera(new Vector2D(getMousePosition().x,getMousePosition().y)).n()).magnitude();
+                    double dist = World.axes[i].add(convertFromCamera(new Vector2D(getMousePosition().x,getMousePosition().y)).n()).magnitude();
                     if(dist<lowestDist){
                         lowestDistIndex = i;
                         lowestDist = dist;
@@ -225,10 +231,10 @@ public class Renderer extends JFrame{
                 }
             }
 
-            // axies transformations
+            // axes transformations
 
             if(ml.button3Down&&selectedAxis!=-1){
-                World.axies[selectedAxis] = convertFromCamera(new Vector2D(getMousePosition().x,getMousePosition().y));
+                World.axes[selectedAxis] = convertFromCamera(new Vector2D(getMousePosition().x,getMousePosition().y));
                 camLock = false;
             }
             for (int i = 0; i < World.axisCount; i++) {
@@ -257,31 +263,31 @@ public class Renderer extends JFrame{
             }
 
             if(normalising) {
-                for (int i = 0; i < World.axies.length; i++) {
-                    World.axies[i] = World.axies[i].normal();
+                for (int i = 0; i < World.axes.length; i++) {
+                    World.axes[i] = World.axes[i].normal();
                 }
             }
 
             //if(kl.isKeyDown(KeyEvent.VK_T)) {
             //    Vector2D[] nwa = new Vector2D[World.axisCount];
-            //    for (int i = 0; i < World.axies.length; i++) {
+            //    for (int i = 0; i < World.axes.length; i++) {
             //        Point convPoint = new Point();
             //        convPoint.setAxis(i, 1);
             //        convPoint.rotateAbout(1, 0.01);
             //        nwa[i] = World.convertPointVector2D(convPoint);
             //    }
-            //    World.axies = nwa;
+            //    World.axes = nwa;
             //}
 
             //if(kl.isKeyDown(KeyEvent.VK_G)) {
             //    Vector2D[] nwa = new Vector2D[World.axisCount];
-            //    for (int i = 0; i < World.axies.length; i++) {
+            //    for (int i = 0; i < World.axes.length; i++) {
             //        Point convPoint = new Point();
             //        convPoint.setAxis(i, 1);
             //        convPoint.rotateAbout(1, -0.01);
             //        nwa[i] = World.convertPointVector2D(convPoint);
             //    }
-            //    World.axies = nwa;
+            //    World.axes = nwa;
             //}
 
             kl.update();
