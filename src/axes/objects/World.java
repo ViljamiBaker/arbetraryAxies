@@ -36,110 +36,30 @@ public class World {
 
     static {Cube.calcCube();}
 
-    public static Level level = null;/*new Level("Tutorial",
+    public static Level level = new Level("Level 1",
         new Cube[]{
             // walls
             new Union(
-                new Cube(new Point(-1,-1,-1,-1), new Point(20,60,25,20), false,false,true), 
-                new Cube(new Point(0,0,0,0), new Point(18,58,23,18), false,false,true)),
+                new Cube(new Point(-1,-1,-1,-1), new Point(20,20,20,20), false,false,true), 
+                new Cube(new Point(0,0,0,0), new Point(18,18,18,18), false,false,true)),
+            
             // floor
-            new Cube(new Point(0,0,0,2), new Point(18,1,23,16), false,true,true),
-            new Cube(new Point(0,0,0,0), new Point(4,1,23,1), false,true,true),
-            new Cube(new Point(4,0,0,0), new Point(5,1,4,1), false,true,true),
-            new Cube(new Point(9,0,0,0), new Point(9,1,18,1), false,true,true),
-            new Cube(new Point(9,0,21,0), new Point(9,1,2,1), false,true,true),
-
-            //water
-            new Water(new Point(4,0,4,0), new Point(5,1,19,1)),
-            new Water(new Point(9,0,18,0), new Point(9,1,3,1)),
-            new TextCube(new Point(6.3,0.9,18,0),1, "Splishy splashy, im a fish -><>"),
-
-            //ferns
-            new Cube(new Point(13,1,0,0), new Point(1,1,11,1), false, true, true),
-            new Cube(new Point(13.1,2,1.1,0), new Point(0.8,3,0.8,1), false, true, true),
-            new Cube(new Point(13.1,2,3.1,0), new Point(0.8,3,0.8,1), false, true, true),
-            new Cube(new Point(13.1,2,5.1,0), new Point(0.8,3,0.8,1), false, true, true),
-            new Cube(new Point(13.1,2,7.1,0), new Point(0.8,3,0.8,1), false, true, true),
-            new Cube(new Point(13.1,2,9.1,0), new Point(0.8,3,0.8,1), false, true, true),
-            new Cube(new Point(17,1,0,0), new Point(1,1,11,1), false, true, true),
-
-            // world
-            new Cube(new Point(10,1,0,0), new Point(3,3,16,1), false, true, true),
-            new Cube(new Point(13,1,11,0), new Point(1,2,3,1), false, true, true),
-            new Cube(new Point(0,1,0,0), new Point(10,3,3,1), false, true, true),
-            new Cube(new Point(0,1,3,0), new Point(3,3,20,1), false, true, true),
-            new Cube(new Point(3.0, 1.0, 3.0, 0.0), new Point(7,3.3,0.2,1), false, true, true),
-            new Cube(new Point(9.8, 1.0, 3.0, 0.0), new Point(0.2,3.3,13.2,1), false, true, true),
-            new Cube(new Point(3.0, 1.0, 3.0, 0.0), new Point(0.2,3.3,20,1), false, true, true),
-            new Cube(new Point(9.8, 1.0, 16.0, 0.0), new Point(3.2,3.3,0.2,1), false, true, true),
-            new Cube(new Point(13, 1.0, 16.0, 0.0), new Point(5,1.3,0.2,1), false, true, true),
-
-            // tutorial text
-            new TextCube(new Point(15.3, 1.3, 1.3, 0.3),1, "Hello, I am a tutorial cube! Use IJKL to move."), 
-            new TextCube(new Point(15.3, 1.3, 3.3, 0.3),1, "Don't like following the player? press C to unlock the camera and WASD to move it!"), 
-            new TextCube(new Point(15.3, 1.3, 5.3, 0.3),1, "Dislike the way things look, see those little circles at the origin? Those are axes, left click them and right click to move them!"), 
-            new TextCube(new Point(15.3, 0.7, 5.3, 0.3),1, "(this disables player camera (C to turn back on))"), 
-            new TextCube(new Point(15.3, 1.3, 7.3, 0.3),1, "Can't tell depth? try pressing G and moving the axes!"), 
-
-            new TextCube(new Point(15.3, 1.3, 12.3, 0.3),1, "Ok, lets do something more difficult, press space to jump onto that ledge."), 
-            new TextCube(new Point(11.3,4.3,12.3,0.3),1, "I knew you could do it :) follow the cubes with points to continue."), 
-
-            new Cube(new Point(11.3,4.3,9.3,0.3), new Point(0.4,0.4,0.4,0.4), true, true, false),
-            new TextCube(new Point(11.3,4.3,6.7,0.3),1, "By the way, cubes with points are usually special jsyk."), 
-            new Cube(new Point(11.3,4.3,4.3,0.3), new Point(0.4,0.4,0.4,0.4), true, true, false),
-
-            new TextCube(new Point(11.3,4.3,1.3,0.3),1, "Ok now press P to pick this brown cube up and move along to the next cube."),
-
-            new TextCube(new Point(1.3,4.3,1.3,0.3),1, "Whew, that was hard wasn't it? OK, now push it to the next blue cube through this tunnel."),
-            
-            new Union(
-                new Cube(new Point(0.75,4,5,0), new Point(1.5,1.5,5,1), false, true, true),
-                new Cube(new Point(0.9,4,5,0), new Point(1.2,1.2,5,1), false, true, false)),
-
-            new TextCube(new Point(1.3,4.3,12.3,0.3),1, "Alright, final challenge, put the cube on this button to open the door."),
-
-            new Cube(new Point(0,4,16,0), new Point(3,3,1,1), true, true, true, new Color(89, 45, 0), "Door"),
-            new Cube(new Point(0,4,20,0), new Point(3,3,1,1), true, true, true, new Color(89, 45, 0), "Door1"),
-
-            new Cube(new Point(3,1,16,0), new Point(1,10,5,1), false, false, true),
-
-            new Cube(new Point(1.0,4.0,14.0,0), new Point(1,0.1,1,1), true, true, true, Color.MAGENTA),
-
-            new TextCube(new Point(1.3,4.3,16.7,0.3),1, "Good jop :)."),
-            
-            new Cube(new Point(1.0, 4.0, 21.5, 0.0), new Point(1,0.1,1,1), true, true, true, new Color(196, 196, 0)),
-
-            new Cube(new Point(0,0,16,-2), new Point(3,10,5,1), true, true, true, new Color(89, 45, 0), "troll1"),
-
-            new TextCube(new Point(2.3,1.3,17.7,5.3),1, "What just happened"),
-
-            new TextCube(new Point(7.3,1.3,7.7,5.3),1, "Uuuuuh, so you win! yipee (I have no idea what is happening)"),
-            new TextCube(new Point(10.3,1.3,7.7,5.3),1, "Step onto the  yellow button to win i guess"),
-            new Cube(new Point(13.0, 1.0, 8.0,9.0), new Point(1,0.1,1,1), true, true, true, new Color(196, 196, 0), "Winregion"),
-
+            new Cube(new Point(0,0,0,0), new Point(18,1,18,1), false,true,true),
         },
         new MoveableCube[] {
-            new MoveableCube(new Point(15,50,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93, "Player"),
-            new MoveableCube(new Point(9.3,3.3,1.05,0), new Point(0.9,0.9,0.9,0.9)),
+            new MoveableCube(new Point(15,1,1,0.01), new Point(0.9,0.9,0.9,0.9), 0.98, 0.93, "Player"),
+            new MoveableCube(new Point(2.0, 1.0, 1.0, 0.0), new Point(0.9,0.9,0.9,0.9)),
+            new MoveableCube(new Point(2.0, 2.0, 1.0, 0.0), new Point(0.9,0.9,0.9,0.9)),
+            new MoveableCube(new Point(2.0, 3.0, 1.0, 0.0), new Point(0.9,0.9,0.9,0.9)),
+            new MoveableCube(new Point(2.0, 4.0, 1.0, 0.0), new Point(0.9,0.9,0.9,0.9)),
+            new MoveableCube(new Point(2.0, 5.0, 1.0, 0.0), new Point(0.9,0.9,0.9,0.9)),
         },
         new Model[]{},
-        new LogicObject[]{
-            new TriggerArea(new Point(1.0,4.0,14.0,0), new Point(1,0.5,1,1), TriggerAreaType.ONOFF, "Door", "Moving"),
-            new CubeMover("Door", "Door", new Point(0,4,16,0), new Point(0,7,16,0), 3),
-
-            new TriggerArea(new Point(0.0,4.0,18.0,0), new Point(3,1,2,1), TriggerAreaType.ON, "Door1", "Player"),
-            new CubeMover("Door1", "Door1", new Point(0,4,20,0), new Point(0,7,20,0), 16),
-            new CubeMover("Door1", "troll1", new Point(0,0,16,-2), new Point(0,0,16,4), 5),
-
-            new TriggerArea(new Point(7.0,1.0,7.5,5.0), new Point(1,1,1,1), TriggerAreaType.ON, "WinregionMover", "Player"),
-            new TriggerMover("WinregionMover", "Winregion", new Point(13.0, 1.0, 8.0, 9.0), new Point(13.0, 1.0, 8.0, 5.0), 3),
-            new CubeMover("WinregionMover", "Winregion", new Point(13.0, 1.0, 8.0,9.0), new Point(13.0, 1.0, 8.0, 5.0), 3),
-            new LevelWinArea(new Point(13.0, 1.0, 8.0,9.0), new Point(1,1,1,1), "Winregion"),
-        }
+        new LogicObject[]{}
         );
         static{
             level.initSync();
-        }*/
+        }
     
 
     public static Vector2D convertPointVector2D(Point initial){

@@ -93,11 +93,11 @@ public class Renderer extends JFrame{
         World.ZERO = new Point();
         setBGValues();
 
-        Loader.load("Tutorial");
+        //Loader.load("Tutorial");
+
+        Loader.save();
 
         Renderer.intitLevel();
-
-        //Loader.save();
     }
 
     public class mouseListener implements MouseListener{
@@ -510,8 +510,8 @@ public class Renderer extends JFrame{
         bg.setColor(Color.BLACK);
 
         if(World.level.win){
-            String text = "You win the tutorial";
-            queuedStrings.add(new StringStruct(text,g.getFontMetrics().stringWidth(text),g.getFontMetrics().getHeight(), 500, 400));
+            String text = "You win the " + World.level.name;
+            queuedStrings.add(new StringStruct(text,bg.getFontMetrics().stringWidth(text),bg.getFontMetrics().getHeight(), 500, 400));
         }
 
         for (StringStruct ps : queuedStrings) {
